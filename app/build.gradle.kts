@@ -1,6 +1,8 @@
 import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Properties
 
 plugins {
@@ -104,7 +106,10 @@ android {
             if (this is ApkVariantOutputImpl) {
                 val abiFilter = filters.find { it.filterType.equals(ABI.name) }
                 val abiName = abiFilter?.identifier ?: "universal"
-                outputFileName = "Echoir-${versionName}-${buildType.name}-${abiName}.apk"
+                val buildTime =
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+                outputFileName =
+                    "Echoir-${versionName}-${buildType.name}-${abiName}-${buildTime}.apk"
             }
         }
     }
