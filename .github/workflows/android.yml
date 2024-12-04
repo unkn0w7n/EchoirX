@@ -59,7 +59,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
         run: |
-          VERSION=$(grep "versionName" app/build.gradle | awk '{print $2}' | tr -d '"')
+          VERSION=$(grep -A5 'defaultConfig {' app/build.gradle.kts | grep 'versionName' | awk -F '"' '{print $2}')
           gh release create "v${VERSION}" \
             --title "Echoir v${VERSION}" \
             --notes "Release v${VERSION}" \
