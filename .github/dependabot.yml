@@ -6,4 +6,8 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
     labels:
-      - "Dependencies"
+      - "dependencies"
+    commit-message:
+      prefix: "build"
+      prefix-development: "build(dev)"
+      include: "scope"
