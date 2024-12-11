@@ -11,11 +11,15 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.prepareGet
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.OutputStream
 import javax.inject.Inject
 
 class ApiService @Inject constructor(
@@ -74,4 +78,12 @@ class ApiService @Inject constructor(
                 header("X-API-Key", API_KEY)
             }.body()
         }
+
+    suspend fun downloadFileToStream(url: String, outputStream: OutputStream) {
+        withContext(Dispatchers.IO) {
+            client.prepareGet(url) {
+                header("X-API-Key", API_KEY)
+            }.execute { it.bodyAsChannel().copyTo(outputStream) }
+        }
+    }
 }

@@ -187,8 +187,9 @@ class DownloadRepositoryImpl @Inject constructor(
     }
 
     private suspend fun downloadSingleFile(url: String, outputFile: File) {
-        val response = apiService.downloadFile(url)
-        outputFile.writeBytes(response)
+        outputFile.outputStream().use {
+            apiService.downloadFileToStream(url, it)
+        }
     }
 
     private suspend fun downloadMultipleFiles(
