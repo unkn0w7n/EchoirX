@@ -1,19 +1,13 @@
 package dev.jyotiraditya.echoir.domain.usecase
 
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import androidx.work.workDataOf
 import dev.jyotiraditya.echoir.data.worker.DownloadQueueManager
-import dev.jyotiraditya.echoir.data.worker.DownloadWorker
+import dev.jyotiraditya.echoir.data.worker.enqueueDownloadWork
 import dev.jyotiraditya.echoir.domain.model.Download
 import dev.jyotiraditya.echoir.domain.model.DownloadRequest
 import dev.jyotiraditya.echoir.domain.model.QualityConfig
+import dev.jyotiraditya.echoir.domain.model.QueuedDownload
 import dev.jyotiraditya.echoir.domain.repository.DownloadRepository
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ProcessDownloadUseCase @Inject constructor(
@@ -41,7 +35,8 @@ class ProcessDownloadUseCase @Inject constructor(
         )
 
         downloadRepository.saveDownload(download)
-        enqueueDownloadWork(download, request.config)
+        queueManager.queueDownload(QueuedDownload(download, request.config))
+        processQueue()
     }
 
     private suspend fun processAlbumDownload(request: DownloadRequest.Album) {
@@ -61,41 +56,24 @@ class ProcessDownloadUseCase @Inject constructor(
             )
 
             downloadRepository.saveDownload(download)
+            queueManager.queueDownload(QueuedDownload(download, request.config))
+        }
+        processQueue()
+    }
 
-            // Wait until we can start a new download
-            while (!queueManager.canStartNewDownload()) {
-                delay(1000)
-            }
-
-            enqueueDownloadWork(download, request.config)
+    private fun processQueue() {
+        while (queueManager.canStartNewDownload()) {
+            val nextDownload = queueManager.dequeueDownload() ?: break
+            startDownloadWork(nextDownload.download, nextDownload.config)
         }
     }
 
-    private suspend fun enqueueDownloadWork(download: Download, config: QualityConfig) {
-        val workRequest = OneTimeWorkRequestBuilder<DownloadWorker>()
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .setInputData(
-                workDataOf(
-                    DownloadWorker.KEY_DOWNLOAD_ID to download.downloadId,
-                    DownloadWorker.KEY_TRACK_ID to download.trackId,
-                    DownloadWorker.KEY_QUALITY to config.quality,
-                    DownloadWorker.KEY_AC4 to config.ac4,
-                    DownloadWorker.KEY_IMMERSIVE to config.immersive
-                )
-            )
-            .build()
-
-        queueManager.incrementActiveDownloads()
-
-        workManager.enqueueUniqueWork(
-            "download_${download.downloadId}",
-            ExistingWorkPolicy.KEEP,
-            workRequest
+    private fun startDownloadWork(download: Download, config: QualityConfig) {
+        enqueueDownloadWork(
+            workManager = workManager,
+            download = download,
+            config = config,
+            queueManager = queueManager
         )
     }
 }

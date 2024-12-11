@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dagger.assisted.Assisted
@@ -23,7 +24,6 @@ class DownloadWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     companion object {
-        private const val TAG = "DownloadWorker"
         const val KEY_DOWNLOAD_ID = "download_id"
         const val KEY_TRACK_ID = "track_id"
         const val KEY_QUALITY = "quality"
@@ -117,6 +117,18 @@ class DownloadWorker @AssistedInject constructor(
             Result.failure()
         } finally {
             queueManager.decrementActiveDownloads()
+
+            if (queueManager.canStartNewDownload()) {
+                val nextDownload = queueManager.dequeueDownload()
+                if (nextDownload != null) {
+                    enqueueDownloadWork(
+                        workManager = WorkManager.getInstance(applicationContext),
+                        download = nextDownload.download,
+                        config = nextDownload.config,
+                        queueManager = queueManager
+                    )
+                }
+            }
         }
     }
 }
