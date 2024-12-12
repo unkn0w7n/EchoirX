@@ -83,8 +83,13 @@ class DownloadRepositoryImpl @Inject constructor(
         runCatching {
             Log.d(TAG, "Starting download for track: $trackId with quality: $quality")
 
-            val playbackInfo = getPlaybackInfo(
-                PlaybackRequest(trackId, quality, ac4 = ac4, immersive = immersive)
+            val (playbackInfo, metadata) = getDownloadInfo(
+                PlaybackRequest(
+                    id = trackId,
+                    quality = quality,
+                    ac4 = ac4,
+                    immersive = immersive
+                )
             )
 
             updateDownloadStatus(downloadId, DownloadStatus.DOWNLOADING)
@@ -107,12 +112,12 @@ class DownloadRepositoryImpl @Inject constructor(
                 processDownloadedFile(cacheFile, extension)
             }
 
+            // Embed metadata while file is still in cache
+            metadataManager.embedMetadata(cacheFile.absolutePath, metadata)
+
             // Get download info and generate filename
             val download =
                 getDownloadById(downloadId) ?: throw IOException("Download info not found")
-
-            // Embed metadata
-            metadataManager.embedMetadata(download, cacheFile.absolutePath)
 
             // Generate safe filename
             val safeFileName = generateFileName(download)
@@ -261,8 +266,11 @@ class DownloadRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlaybackInfo(request: PlaybackRequest): PlaybackResponse =
-        apiService.getPlaybackInfo(request).toDomain()
+    override suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponse, Map<String, String>> =
+        apiService.getDownloadInfo(request)
+            .let { (playbackDto, metadata) ->
+                playbackDto.toDomain() to metadata
+            }
 
     override suspend fun saveDownload(download: Download) =
         downloadDao.insert(download)

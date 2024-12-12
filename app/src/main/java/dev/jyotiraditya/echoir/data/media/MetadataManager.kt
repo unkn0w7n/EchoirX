@@ -8,7 +8,6 @@ import android.util.Log
 import com.kyant.taglib.Picture
 import com.kyant.taglib.TagLib
 import dev.jyotiraditya.echoir.data.remote.api.ApiService
-import dev.jyotiraditya.echoir.domain.model.Download
 import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
@@ -22,9 +21,8 @@ class MetadataManager @Inject constructor(
         private const val TAG = "MetadataManager"
     }
 
-    suspend fun embedMetadata(download: Download, filePath: String) {
+    suspend fun embedMetadata(filePath: String, metadata: Map<String, String>) {
         try {
-            val metadata = apiService.getTrackMetadata(download.trackId)
             val file = File(filePath)
 
             ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_WRITE).use { pfd ->

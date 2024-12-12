@@ -16,7 +16,7 @@ interface DownloadRepository {
         onProgress: suspend (Int) -> Unit
     ): Result<String>
 
-    suspend fun getPlaybackInfo(request: PlaybackRequest): PlaybackResponse
+    suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponse, Map<String, String>>
     suspend fun saveDownload(download: Download)
     suspend fun updateDownloadProgress(downloadId: String, progress: Int)
     suspend fun updateDownloadStatus(downloadId: String, status: DownloadStatus)

@@ -18,6 +18,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.io.OutputStream
 import javax.inject.Inject
@@ -52,24 +54,29 @@ class ApiService @Inject constructor(
             }.body()
         }
 
-    suspend fun getPlaybackInfo(request: PlaybackRequest): PlaybackResponseDto =
+    suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponseDto, Map<String, String>> =
         withContext(Dispatchers.IO) {
             val region = settingsRepository.getRegion()
-            client.post("$BASE_URL/track/playback") {
-                contentType(ContentType.Application.Json)
-                header("X-API-Key", API_KEY)
-                setBody(request.copy(country = region))
-            }.body()
-        }
 
-    suspend fun getTrackMetadata(trackId: Long): Map<String, String> =
-        withContext(Dispatchers.IO) {
-            val region = settingsRepository.getRegion()
-            client.get("$BASE_URL/track/metadata") {
-                parameter("id", trackId)
-                parameter("country", region)
-                header("X-API-Key", API_KEY)
-            }.body()
+            coroutineScope {
+                val playback = async {
+                    client.post("$BASE_URL/track/playback") {
+                        contentType(ContentType.Application.Json)
+                        header("X-API-Key", API_KEY)
+                        setBody(request.copy(country = region))
+                    }.body<PlaybackResponseDto>()
+                }
+
+                val metadata = async {
+                    client.get("$BASE_URL/track/metadata") {
+                        parameter("id", request.id)
+                        parameter("country", region)
+                        header("X-API-Key", API_KEY)
+                    }.body<Map<String, String>>()
+                }
+
+                Pair(playback.await(), metadata.await())
+            }
         }
 
     suspend fun downloadFile(url: String): ByteArray =
