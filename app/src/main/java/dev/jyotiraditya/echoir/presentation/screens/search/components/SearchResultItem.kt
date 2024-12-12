@@ -29,14 +29,19 @@ fun SearchResultItem(
         overlineContent = {
             result.formats?.let { formats ->
                 Text(
-                    text = formats.joinToString(separator = " / ") {
+                    text = formats.mapNotNullTo(mutableSetOf()) {
                         when (it) {
                             "HIRES_LOSSLESS" -> "HI-RES"
                             "LOSSLESS" -> "LOSSLESS"
                             "DOLBY_ATMOS" -> "DOLBY"
-                            else -> "UNKNOWN"
+                            "HIGH", "LOW" -> "AAC"
+                            else -> null
                         }
-                    },
+                    }.apply {
+                        if (formats.any { it == "HIRES_LOSSLESS" || it == "LOSSLESS" }) {
+                            add("AAC")
+                        }
+                    }.joinToString(" / "),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.secondary
                 )
