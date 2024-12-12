@@ -13,32 +13,63 @@ Echoir (from Echo + Choir) is a music downloader that aims to provide high-quali
 ## Features
 
 - Multiple quality options:
-  - Hi-Res Lossless (up to 24-bit/192kHz)
-  - Lossless CD Quality (16-bit/44.1kHz)
-  - Dolby Atmos (AC-3/AC-4)
+  - Hi-Res Lossless (up to 24-bit/192kHz FLAC)
+  - Lossless CD Quality (16-bit/44.1kHz FLAC)
+  - Dolby Atmos (Enhanced AC-3/AC-4)
+  - High Quality AAC (320kbps)
+  - Standard Quality AAC (96kbps)
 
 - Material You theming
   - Dynamic colors
   - Material Design 3 components
 
 - Core functionality
-  - Background downloads
-  - Metadata embedding
+  - Background downloads with progress notifications
+  - Comprehensive metadata embedding
   - Download queue management
-  - Custom download location
+  - Customizable download location
   - Configurable file naming format
-  - Region selection
+  - **Filters for quality and content:**
+    - **Quality filters:** Hi-Res, Lossless, Dolby Atmos
+    - **Content filters:** Explicit, Clean
+  - Content filtering options (Explicit/Clean)
+  - Album/track download support
+  - Clear cache and reset settings options
 
 ## Available Regions
 
 <details>
 <summary>Supported Countries</summary>
 
+- 🇦🇱 Albania (AL)
+- 🇦🇷 Argentina (AR)
+- 🇦🇺 Australia (AU)
+- 🇦🇹 Austria (AT)
+- 🇧🇪 Belgium (BE)
 - 🇧🇷 Brazil (BR)
-- 🇫🇮 Finland (FI)
+- 🇨🇦 Canada (CA)
+- 🇨🇱 Chile (CL)
+- 🇨🇴 Colombia (CO)
+- 🇩🇴 Dominican Republic (DO)
+- 🇫🇷 France (FR)
 - 🇩🇪 Germany (DE)
+- 🇭🇰 Hong Kong (HK)
+- 🇮🇱 Israel (IL)
+- 🇮🇹 Italy (IT)
+- 🇯🇲 Jamaica (JM)
 - 🇲🇾 Malaysia (MY)
+- 🇲🇽 Mexico (MX)
 - 🇳🇿 New Zealand (NZ)
+- 🇳🇬 Nigeria (NG)
+- 🇵🇪 Peru (PE)
+- 🇵🇷 Puerto Rico (PR)
+- 🇸🇬 Singapore (SG)
+- 🇿🇦 South Africa (ZA)
+- 🇪🇸 Spain (ES)
+- 🇹🇭 Thailand (TH)
+- 🇺🇬 Uganda (UG)
+- 🇦🇪 United Arab Emirates (AE)
+- 🇬🇧 United Kingdom (GB)
 - 🇺🇸 United States (US)
 
 </details>
@@ -112,7 +143,7 @@ Echoir is the successor to FluidAC, reimagined with major improvements:
        - No quality loss or modification
   - The code is open-source and can be audited to verify this simple operation
 
-Note: For Lossless CD Quality and Dolby Atmos formats, direct downloads are used without any FFmpeg processing.
+Note: For other formats like Lossless CD Quality, Dolby Atmos, and AAC, direct downloads are used without any FFmpeg processing.
 </details>
 
 ## Related Projects & Recommendations
