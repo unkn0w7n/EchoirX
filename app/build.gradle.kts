@@ -34,6 +34,11 @@ android {
         versionName = "1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        manifestPlaceholders += mutableMapOf(
+            "appIcon" to "@mipmap/ic_launcher",
+            "appIconRound" to "@mipmap/ic_launcher_round"
+        )
+
         val apiKey = keystoreProperties.getProperty("API_KEY", "")
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
@@ -67,6 +72,10 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            manifestPlaceholders += mutableMapOf(
+                "appIcon" to "@mipmap/ic_launcher_debug",
+                "appIconRound" to "@mipmap/ic_launcher_debug_round"
+            )
         }
         release {
             isMinifyEnabled = true
