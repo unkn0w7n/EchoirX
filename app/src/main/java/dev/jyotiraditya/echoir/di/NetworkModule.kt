@@ -8,9 +8,12 @@ import dev.jyotiraditya.echoir.data.remote.api.ApiService
 import dev.jyotiraditya.echoir.domain.repository.SettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import java.time.Duration
 import javax.inject.Singleton
 
 @Module
@@ -20,10 +23,31 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideKtorClient(): HttpClient = HttpClient(OkHttp) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = Duration.ofMinutes(2).toMillis()
+            connectTimeoutMillis = Duration.ofSeconds(20).toMillis()
+            socketTimeoutMillis = Duration.ofMinutes(1).toMillis()
+        }
+
+        install(HttpRequestRetry) {
+            retryOnServerErrors(maxRetries = 3)
+            retryOnException(maxRetries = 3, retryOnTimeout = true)
+            exponentialDelay()
+        }
+
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
             })
+        }
+
+        engine {
+            config {
+                retryOnConnectionFailure(true)
+                connectTimeout(Duration.ofSeconds(20))
+                readTimeout(Duration.ofMinutes(1))
+                writeTimeout(Duration.ofMinutes(1))
+            }
         }
     }
 
