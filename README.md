@@ -12,6 +12,14 @@ A Material You music downloader for Android
 
 Echoir (from Echo + Choir) is a music downloader that aims to provide high-quality audio formats while adhering to Material Design principles. The name also plays on the phrase "which will fall soon", reflecting the ephemeral nature of software projects.
 
+## Credits
+
+- **Design Assets:**
+  - App launcher icon and banner design by [Xelxen](https://github.com/Xelxen)
+
+- **Core Dependencies:**
+  - [ffmpeg-kit](https://github.com/arthenica/ffmpeg-kit) by Arthenica
+
 ## Features
 
 - Multiple quality options:
