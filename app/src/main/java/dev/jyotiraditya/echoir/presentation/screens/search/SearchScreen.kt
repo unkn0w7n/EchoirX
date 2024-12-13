@@ -2,6 +2,10 @@ package dev.jyotiraditya.echoir.presentation.screens.search
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -41,22 +46,18 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -71,7 +72,6 @@ import dev.jyotiraditya.echoir.presentation.components.EmptyStateMessage
 import dev.jyotiraditya.echoir.presentation.components.TrackBottomSheet
 import dev.jyotiraditya.echoir.presentation.navigation.Route
 import dev.jyotiraditya.echoir.presentation.screens.search.components.SearchResultItem
-import kotlin.math.absoluteValue
 
 @OptIn(
     ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class,
@@ -83,6 +83,7 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val lazyListState = rememberLazyListState()
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -92,21 +93,13 @@ fun SearchScreen(
     var showFilterColumn by remember { mutableStateOf(false) }
 
     // hide filter chips when we start scrolling search results
-    var filterColumnHeightPx by remember { mutableFloatStateOf(0f) }
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                if (showFilterColumn && available.y < 0) {
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
+            .collect { scrollOffset ->
+                if (scrollOffset > 0) {
                     showFilterColumn = false
-                    return Offset(
-                        x = 0f,
-                        // consume the filter column height from the scroll delta
-                        y = -minOf(filterColumnHeightPx, available.y.absoluteValue)
-                    )
                 }
-                return Offset.Zero
             }
-        }
     }
 
     Column(
@@ -228,16 +221,15 @@ fun SearchScreen(
         }
 
         AnimatedVisibility(
-            visible = showFilterColumn
+            visible = showFilterColumn,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
-                    .onGloballyPositioned { coordinates ->
-                        filterColumnHeightPx = coordinates.size.height.toFloat()
-                    }
             ) {
                 Row(
                     modifier = Modifier
@@ -366,8 +358,7 @@ fun SearchScreen(
             SearchStatus.Success -> {
                 if (state.filteredResults.isNotEmpty()) {
                     LazyColumn(
-                        modifier = Modifier
-                            .nestedScroll(nestedScrollConnection)
+                        state = lazyListState
                     ) {
                         items(state.filteredResults) { result ->
                             SearchResultItem(
