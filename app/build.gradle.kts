@@ -77,6 +77,20 @@ android {
                 "appIconRound" to "@mipmap/ic_launcher_debug_round"
             )
         }
+        create("beta") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            applicationIdSuffix = ".beta"
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfigs.findByName("release")?.let { signingConfig = it }
+            manifestPlaceholders += mutableMapOf(
+                "appIcon" to "@mipmap/ic_launcher_beta",
+                "appIconRound" to "@mipmap/ic_launcher_beta_round"
+            )
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
