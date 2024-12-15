@@ -11,6 +11,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.presentation.navigation.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,10 +26,10 @@ fun EchoirTopBar(
         title = {
             Text(
                 text = when (currentRoute) {
-                    is Route.Home -> "Home"
-                    is Route.Settings -> "Settings"
-                    is Route.Search.Main -> "Search"
-                    is Route.Search.Details -> "Details"
+                    is Route.Home -> stringResource(R.string.nav_home)
+                    is Route.Settings -> stringResource(R.string.nav_settings)
+                    is Route.Search.Main -> stringResource(R.string.nav_search)
+                    is Route.Search.Details -> stringResource(R.string.nav_details)
                     null -> ""
                 },
                 style = MaterialTheme.typography.titleLarge
@@ -38,7 +40,7 @@ fun EchoirTopBar(
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(R.string.cd_back_button)
                     )
                 }
             }

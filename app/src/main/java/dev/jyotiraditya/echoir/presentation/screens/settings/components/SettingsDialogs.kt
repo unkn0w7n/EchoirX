@@ -25,8 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.domain.model.FileNamingFormat
 import dev.jyotiraditya.echoir.domain.model.Region
 
@@ -46,7 +49,7 @@ fun FileNamingFormatDialog(
         },
         title = {
             Text(
-                text = "File naming format",
+                text = stringResource(R.string.title_file_naming_format),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -92,7 +95,7 @@ fun FileNamingFormatDialog(
                                 )
                             )
                             Text(
-                                text = format.displayName,
+                                text = stringResource(format.displayNameResId),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = contentColor
                             )
@@ -104,7 +107,7 @@ fun FileNamingFormatDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.action_done),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -153,7 +156,7 @@ fun CrucialSettingsDialog(
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.action_cancel),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -188,12 +191,12 @@ fun RegionDialog(
         icon = {
             Icon(
                 imageVector = Icons.Outlined.Public,
-                contentDescription = null
+                contentDescription = stringResource(R.string.title_region)
             )
         },
         title = {
             Text(
-                text = "Region",
+                text = stringResource(R.string.title_region),
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -239,7 +242,7 @@ fun RegionDialog(
                                 )
                             )
                             Text(
-                                text = region.displayName,
+                                text = Region.getDisplayName(region, LocalContext.current),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = contentColor,
                                 modifier = Modifier.weight(1f)
@@ -259,7 +262,7 @@ fun RegionDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.action_done),
                     style = MaterialTheme.typography.labelLarge
                 )
             }

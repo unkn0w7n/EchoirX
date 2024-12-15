@@ -1,5 +1,7 @@
 package dev.jyotiraditya.echoir.presentation.screens.search
 
+import androidx.annotation.StringRes
+import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.domain.model.SearchResult
 
 data class SearchState(
@@ -12,9 +14,11 @@ data class SearchState(
     val error: String? = null
 )
 
-enum class SearchType(val title: String) {
-    TRACKS("Tracks"),
-    ALBUMS("Albums")
+enum class SearchType(
+    @StringRes val title: Int
+) {
+    TRACKS(R.string.label_tracks),
+    ALBUMS(R.string.label_albums)
 }
 
 data class SearchFilter(
@@ -23,20 +27,20 @@ data class SearchFilter(
 )
 
 enum class SearchContentFilter(
-    val label: String,
+    @StringRes val label: Int,
     val explicit: Boolean
 ) {
-    CLEAN("Clean", false),
-    EXPLICIT("Explicit", true),
+    CLEAN(R.string.label_clean, false),
+    EXPLICIT(R.string.label_explicit, true),
 }
 
 enum class SearchQuality(
-    val label: String,
+    @StringRes val label: Int,
     val format: String
 ) {
-    HIRES("Hi-Res", "HIRES_LOSSLESS"),
-    LOSSLESS("Lossless", "LOSSLESS"),
-    ATMOS("Dolby Atmos", "DOLBY_ATMOS"),
+    HIRES(R.string.quality_label_hires, "HIRES_LOSSLESS"),
+    LOSSLESS(R.string.quality_label_lossless, "LOSSLESS"),
+    ATMOS(R.string.label_dolby_atmos, "DOLBY_ATMOS"),
 }
 
 sealed class SearchStatus {

@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,12 +43,12 @@ fun EchoirBottomNav(
                 icon = {
                     Icon(
                         painter = painterResource(item.icon),
-                        contentDescription = item.label
+                        contentDescription = stringResource(item.label)
                     )
                 },
                 label = {
                     Text(
-                        text = item.label,
+                        text = stringResource(item.label),
                         style = MaterialTheme.typography.labelMedium
                     )
                 }

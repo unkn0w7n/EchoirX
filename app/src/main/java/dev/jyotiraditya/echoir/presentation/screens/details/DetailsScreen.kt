@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -101,14 +102,14 @@ fun DetailsScreen(
                         if (result.formats?.contains("DOLBY_ATMOS") == true) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_dolby),
-                                contentDescription = "Dolby Atmos",
+                                contentDescription = stringResource(R.string.cd_dolby_atmos),
                                 modifier = Modifier.size(16.dp)
                             )
                         }
                         if (result.explicit) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_explicit),
-                                contentDescription = "Explicit",
+                                contentDescription = stringResource(R.string.cd_explicit_content),
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -128,7 +129,10 @@ fun DetailsScreen(
                     viewModel.downloadAlbum(config)
                     Toast.makeText(
                         context,
-                        "Started downloading in ${config.label} quality",
+                        context.getString(
+                            R.string.msg_download_started,
+                            context.getString(config.label)
+                        ),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -152,7 +156,7 @@ fun DetailsScreen(
 
                 state.error != null -> {
                     Text(
-                        text = state.error ?: "Unknown error occurred",
+                        text = state.error ?: stringResource(R.string.msg_unknown_error),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -211,7 +215,7 @@ fun DetailsScreen(
                                             if (track.explicit) {
                                                 Icon(
                                                     painter = painterResource(R.drawable.ic_explicit),
-                                                    contentDescription = "Explicit",
+                                                    contentDescription = stringResource(R.string.cd_explicit_content),
                                                     modifier = Modifier.size(16.dp),
                                                 )
                                             }
@@ -219,7 +223,7 @@ fun DetailsScreen(
 
                                         Icon(
                                             painter = painterResource(R.drawable.ic_download),
-                                            contentDescription = "Download options",
+                                            contentDescription = stringResource(R.string.cd_download_button),
                                             modifier = Modifier.size(20.dp),
                                             tint = MaterialTheme.colorScheme.primary
                                         )
@@ -249,7 +253,7 @@ fun DetailsScreen(
                 viewModel.downloadTrack(selectedTrack!!, config)
                 Toast.makeText(
                     context,
-                    "Started downloading in ${config.label} quality",
+                    R.string.msg_download_started,
                     Toast.LENGTH_SHORT
                 ).show()
             },

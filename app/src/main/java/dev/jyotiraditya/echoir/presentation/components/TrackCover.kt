@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.jyotiraditya.echoir.R
 
 @Composable
 fun TrackCover(
@@ -22,7 +24,7 @@ fun TrackCover(
     Box(modifier = modifier) {
         AsyncImage(
             model = url,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_track_image),
             modifier = Modifier
                 .size(size)
                 .clip(MaterialTheme.shapes.extraSmall)

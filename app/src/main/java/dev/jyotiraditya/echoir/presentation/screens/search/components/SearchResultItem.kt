@@ -13,39 +13,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.domain.model.SearchResult
 import dev.jyotiraditya.echoir.presentation.components.TrackCover
+import java.util.Locale
 
 @Composable
 fun SearchResultItem(
     result: SearchResult,
     onClick: () -> Unit
 ) {
+    val formatsDisplay = result.formats?.let { formats ->
+        formats.mapTo(mutableSetOf()) {
+            when (it) {
+                "HIRES_LOSSLESS" -> stringResource(R.string.quality_label_hires_short)
+                "LOSSLESS" -> stringResource(R.string.quality_label_lossless_short)
+                "DOLBY_ATMOS" -> stringResource(R.string.label_dolby)
+                "HIGH", "LOW" -> stringResource(R.string.label_aac)
+                else -> stringResource(R.string.label_unknown)
+            }
+        }.apply {
+            if (formats.any { it == "HIRES_LOSSLESS" || it == "LOSSLESS" }) {
+                add(stringResource(R.string.label_aac))
+            }
+        }.joinToString(" / ").uppercase(Locale.getDefault())
+    } ?: stringResource(R.string.label_unknown).uppercase(Locale.getDefault())
+
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
         overlineContent = {
-            result.formats?.let { formats ->
-                Text(
-                    text = formats.mapNotNullTo(mutableSetOf()) {
-                        when (it) {
-                            "HIRES_LOSSLESS" -> "HI-RES"
-                            "LOSSLESS" -> "LOSSLESS"
-                            "DOLBY_ATMOS" -> "DOLBY"
-                            "HIGH", "LOW" -> "AAC"
-                            else -> null
-                        }
-                    }.apply {
-                        if (formats.any { it == "HIRES_LOSSLESS" || it == "LOSSLESS" }) {
-                            add("AAC")
-                        }
-                    }.joinToString(" / "),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-            }
+            Text(
+                text = formatsDisplay,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.secondary
+            )
         },
         headlineContent = {
             Text(
@@ -81,7 +85,7 @@ fun SearchResultItem(
                 if (result.explicit) {
                     Icon(
                         painter = painterResource(R.drawable.ic_explicit),
-                        contentDescription = "Explicit",
+                        contentDescription = stringResource(R.string.label_explicit),
                         modifier = Modifier.size(16.dp),
                     )
                 }
@@ -89,7 +93,7 @@ fun SearchResultItem(
                     if (formats.contains("DOLBY_ATMOS")) {
                         Icon(
                             painter = painterResource(R.drawable.ic_dolby),
-                            contentDescription = "Dolby Atmos",
+                            contentDescription = stringResource(R.string.label_dolby_atmos),
                             modifier = Modifier.size(16.dp)
                         )
                     }

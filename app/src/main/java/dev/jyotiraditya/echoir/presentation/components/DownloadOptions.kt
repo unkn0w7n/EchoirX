@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.domain.model.QualityConfig
@@ -78,7 +79,7 @@ fun DownloadOptions(
                     tooltip = {
                         PlainTooltip {
                             Text(
-                                text = config.summary
+                                text = stringResource(config.summary)
                             )
                         }
                     },
@@ -89,17 +90,17 @@ fun DownloadOptions(
                         onClick = { onOptionSelected(config) },
                         label = {
                             Text(
-                                text = when (config.quality) {
-                                    "DOLBY_ATMOS" -> if (config.ac4) "AC4" else "EAC3"
-                                    else -> config.label
-                                },
+                                text = stringResource(config.shortLabel),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.ic_download),
-                                contentDescription = null,
+                                contentDescription = stringResource(
+                                    R.string.cd_download_option,
+                                    config.shortLabel
+                                ),
                                 modifier = Modifier.size(18.dp)
                             )
                         },
@@ -132,12 +133,12 @@ fun DownloadOptions(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
-                    contentDescription = "Information",
+                    contentDescription = stringResource(R.string.cd_info_button),
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = "While downloading AAC tracks, the streaming service may occasionally deliver 96 kbps instead of 320 kbps depending on various factors.",
+                    text = stringResource(R.string.msg_aac_quality_note),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )

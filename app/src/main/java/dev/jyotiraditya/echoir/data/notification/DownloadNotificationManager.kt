@@ -30,10 +30,10 @@ class DownloadNotificationManager @Inject constructor(
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Downloads",
+            context.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Used for music downloads"
+            description = context.getString(R.string.notification_channel_desc)
         }
         notificationManager.createNotificationChannel(channel)
     }
@@ -53,7 +53,6 @@ class DownloadNotificationManager @Inject constructor(
         setCategory(category)
         setOngoing(ongoing)
         setAutoCancel(autoCancel)
-
         contentText?.let { setContentText(it) }
         progress?.let { setProgress(100, it, indeterminate) }
     }.build()
@@ -96,7 +95,7 @@ class DownloadNotificationManager @Inject constructor(
         notificationManager.notify(
             downloadId.hashCode(),
             buildNotification(
-                title = "Download Complete",
+                title = context.getString(R.string.notification_complete),
                 contentText = title,
                 autoCancel = true,
                 category = NotificationCompat.CATEGORY_STATUS
@@ -109,7 +108,7 @@ class DownloadNotificationManager @Inject constructor(
         notificationManager.notify(
             downloadId.hashCode(),
             buildNotification(
-                title = "Download Failed",
+                title = context.getString(R.string.notification_failed),
                 contentText = title,
                 autoCancel = true,
                 category = NotificationCompat.CATEGORY_ERROR
@@ -122,7 +121,7 @@ class DownloadNotificationManager @Inject constructor(
         notificationManager.notify(
             SUMMARY_ID,
             buildNotification(
-                title = "Downloads in progress",
+                title = context.getString(R.string.notification_progress),
                 ongoing = true
             ).apply { flags = flags or NotificationCompat.FLAG_GROUP_SUMMARY }
         )

@@ -1,46 +1,56 @@
 package dev.jyotiraditya.echoir.domain.model
 
+import androidx.annotation.StringRes
+import dev.jyotiraditya.echoir.R
+
 sealed class QualityConfig(
-    val label: String,
+    @StringRes val label: Int,
+    @StringRes val shortLabel: Int = label,
     val quality: String,
     val ac4: Boolean = false,
     val immersive: Boolean = true,
-    val summary: String
+    @StringRes val summary: Int
 ) {
     data object HiRes : QualityConfig(
-        label = "Hi-Res",
+        label = R.string.quality_label_hires,
+        shortLabel = R.string.quality_label_hires_short,
         quality = "HI_RES_LOSSLESS",
-        summary = "24-bit/up to 192kHz FLAC format with maximum audio quality"
+        summary = R.string.quality_desc_hires
     )
 
     data object Lossless : QualityConfig(
-        label = "Lossless",
+        label = R.string.quality_label_lossless,
+        shortLabel = R.string.quality_label_lossless_short,
         quality = "LOSSLESS",
-        summary = "16-bit/44.1kHz FLAC format with CD quality"
+        summary = R.string.quality_desc_lossless
     )
 
     data object AAC320 : QualityConfig(
-        label = "AAC 320",
+        label = R.string.quality_label_aac_320,
+        shortLabel = R.string.quality_label_aac_320_short,
         quality = "HIGH",
-        summary = "High quality lossy compression with 320kbps bitrate, suitable for most listening"
+        summary = R.string.quality_desc_aac_320
     )
 
     data object AAC96 : QualityConfig(
-        label = "AAC 96",
+        label = R.string.quality_label_aac_96,
+        shortLabel = R.string.quality_label_aac_96_short,
         quality = "LOW",
-        summary = "Standard quality lossy compression with 96kbps bitrate, optimal for storage saving"
+        summary = R.string.quality_desc_aac_96
     )
 
     data object DolbyAtmosAC3 : QualityConfig(
-        label = "Dolby Atmos (AC-3)",
+        label = R.string.quality_label_dolby_ac3,
+        shortLabel = R.string.quality_label_dolby_ac3_short,
         quality = "DOLBY_ATMOS",
-        summary = "Enhanced AC-3 format with Dolby Atmos spatial audio"
+        summary = R.string.quality_desc_dolby_ac3
     )
 
     data object DolbyAtmosAC4 : QualityConfig(
-        label = "Dolby Atmos (AC-4)",
+        label = R.string.quality_label_dolby_ac4,
+        shortLabel = R.string.quality_label_dolby_ac4_short,
         quality = "DOLBY_ATMOS",
         ac4 = true,
-        summary = "AC-4 format with Dolby Atmos spatial audio, improved efficiency"
+        summary = R.string.quality_desc_dolby_ac4
     )
 }

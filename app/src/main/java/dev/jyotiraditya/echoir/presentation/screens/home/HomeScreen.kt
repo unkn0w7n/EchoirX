@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.jyotiraditya.echoir.R
@@ -42,7 +43,7 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = state.error ?: "Unknown error occurred",
+                    text = state.error ?: stringResource(R.string.msg_unknown_error),
                     color = MaterialTheme.colorScheme.error
                 )
             }
@@ -50,8 +51,8 @@ fun HomeScreen(
 
         state.activeDownloads.isEmpty() && state.downloadHistory.isEmpty() -> {
             EmptyStateMessage(
-                title = "No downloads yet",
-                description = "Your downloaded tracks will appear here.",
+                title = stringResource(R.string.msg_downloads_empty),
+                description = stringResource(R.string.msg_downloads_empty_desc),
                 painter = painterResource(R.drawable.ic_download)
             )
         }
@@ -63,7 +64,7 @@ fun HomeScreen(
                 if (state.activeDownloads.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Active Downloads",
+                            text = stringResource(R.string.title_active_downloads),
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )
@@ -80,7 +81,7 @@ fun HomeScreen(
                 if (state.downloadHistory.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Download History",
+                            text = stringResource(R.string.title_download_history),
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(
                                 start = 16.dp,

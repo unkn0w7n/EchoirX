@@ -1,3 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App name -->
     <string name="app_name">Echoir</string>
+
+    <!-- Country names array -->
+    <string-array name="region_country_names">
+        <item>Albania</item>
+        <item>Argentina</item>
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Belgium</item>
+        <item>Brazil (recommended)</item>
+        <item>Canada</item>
+        <item>Chile</item>
+        <item>Colombia</item>
+        <item>Dominican Republic</item>
+        <item>France</item>
+        <item>Germany</item>
+        <item>Hong Kong</item>
+        <item>Israel</item>
+        <item>Italy</item>
+        <item>Jamaica</item>
+        <item>Malaysia</item>
+        <item>Mexico</item>
+        <item>New Zealand</item>
+        <item>Nigeria</item>
+        <item>Peru</item>
+        <item>Puerto Rico</item>
+        <item>Singapore</item>
+        <item>South Africa</item>
+        <item>Spain</item>
+        <item>Thailand</item>
+        <item>Uganda</item>
+        <item>United Arab Emirates</item>
+        <item>United Kingdom</item>
+        <item>United States</item>
+    </string-array>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_details">Details</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_back_button">Navigate back</string>
+    <string name="cd_error">Error</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_filter_button">Filter results</string>
+    <string name="cd_download_button">Download options</string>
+    <string name="cd_download_option">Download option: %s</string>
+    <string name="cd_info_button">Information about AAC quality</string>
+    <string name="cd_explicit_content">Explicit content</string>
+    <string name="cd_dolby_atmos">Dolby Atmos supported</string>
+    <string name="cd_track_image">Track artwork</string>
+    <string name="cd_filter_quality">Quality filter options</string>
+    <string name="cd_filter_content">Content filter options</string>
+
+    <!-- Labels -->
+    <string name="label_explicit">Explicit</string>
+    <string name="label_dolby_atmos">Dolby Atmos</string>
+    <string name="label_dolby">Dolby</string>
+    <string name="label_aac">AAC</string>
+    <string name="label_tracks">Tracks</string>
+    <string name="label_albums">Albums</string>
+    <string name="label_clean">Clean</string>
+    <string name="label_unknown">Unknown</string>
+    <string name="label_queued">Queued</string>
+
+    <!-- Titles -->
+    <string name="title_active_downloads">Active downloads</string>
+    <string name="title_download_history">Download history</string>
+    <string name="title_file_naming_format">File naming format</string>
+    <string name="title_region">Region</string>
+    <string name="title_storage">Storage</string>
+    <string name="title_data">Data</string>
+    <string name="title_about">About</string>
+    <string name="title_quality">Quality</string>
+    <string name="title_content">Content</string>
+    <string name="title_panda">Made with hate</string>
+    <string name="title_telegram_channel">Telegram Channel</string>
+    <string name="title_donate">Support development on Ko-fi</string>
+    <string name="title_download_location">Download location</string>
+
+    <!-- Messages -->
+    <string name="msg_downloads_empty">No downloads yet</string>
+    <string name="msg_downloads_empty_desc">Your downloaded tracks will appear here</string>
+    <string name="msg_search_empty">Search for music</string>
+    <string name="msg_search_empty_desc">Enter an artist, album, or track name to start searching</string>
+    <string name="msg_search_no_results">No results found</string>
+    <string name="msg_search_no_results_desc">Try searching with different keywords</string>
+    <string name="msg_search_no_results_filters">No matching results</string>
+    <string name="msg_search_no_results_filters_desc">Try adjusting your filter settings</string>
+    <string name="msg_unknown_error">An unknown error occurred</string>
+    <string name="msg_download_started">Started downloading in %1$s quality</string>
+    <string name="msg_aac_quality_note">While downloading AAC tracks, the service may occasionally deliver 96 kbps instead of 320 kbps based on various factors</string>
+    <string name="msg_clear_data_subtitle">Clear download history and cache</string>
+    <string name="msg_reset_settings_subtitle">Reset all settings to defaults</string>
+    <string name="msg_about_version">Version %s</string>
+    <string name="msg_panda_subtitle">by an exhausted panda running on spite and coffee</string>
+    <string name="msg_donate_subtitle">Help to keep this project alive</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Downloads</string>
+    <string name="notification_channel_desc">Track download notifications</string>
+    <string name="notification_downloading">Downloading %1$s</string>
+    <string name="notification_processing">Processing %1$s</string>
+    <string name="notification_complete">Download Complete</string>
+    <string name="notification_failed">Download Failed</string>
+    <string name="notification_progress">Downloads in progress</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_reset_settings_title">Reset Settings?</string>
+    <string name="dialog_reset_settings_message">Are you sure you want to reset all settings to default? This cannot be undone.</string>
+    <string name="dialog_clear_data_title">Clear Data?</string>
+    <string name="dialog_clear_data_message">Are you sure you want to clear download history and cache? This cannot be undone.</string>
+
+    <!-- Actions -->
+    <string name="action_clear_search">Clear</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_done">Done</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_clear">Clear</string>
+
+    <!-- Quality Labels -->
+    <string name="quality_label_hires">Hi-Res Lossless</string>
+    <string name="quality_label_hires_short">Hi-Res</string>
+    <string name="quality_label_lossless">Lossless</string>
+    <string name="quality_label_lossless_short">CDQ</string>
+    <string name="quality_label_dolby_ac3">Dolby Atmos (AC3)</string>
+    <string name="quality_label_dolby_ac3_short">Dolby EAC3</string>
+    <string name="quality_label_dolby_ac4">Dolby Atmos (AC4)</string>
+    <string name="quality_label_dolby_ac4_short">Dolby AC4</string>
+    <string name="quality_label_aac_320">AAC (320k)</string>
+    <string name="quality_label_aac_320_short">AAC 320</string>
+    <string name="quality_label_aac_96">AAC (96k)</string>
+    <string name="quality_label_aac_96_short">AAC 96</string>
+
+    <!-- Quality Descriptions -->
+    <string name="quality_desc_hires">24-bit/192kHz FLAC format with maximum audio quality</string>
+    <string name="quality_desc_lossless">16-bit/44.1kHz FLAC format with CD quality</string>
+    <string name="quality_desc_dolby_ac3">E-AC-3 format with Dolby Atmos spatial audio</string>
+    <string name="quality_desc_dolby_ac4">AC-4 format with Dolby Atmos spatial audio (recommended)</string>
+    <string name="quality_desc_aac_320">High quality lossy compression at 320 KB/s</string>
+    <string name="quality_desc_aac_96">Standard quality lossy compression at 96 KB/s</string>
+
+    <!-- File Naming Format -->
+    <string name="file_format_artist_title_display">Artist - Title</string>
+    <string name="file_format_title_artist_display">Title - Artist</string>
+    <string name="file_format_title_only_display">Title</string>
+
+    <!-- Hints -->
+    <string name="hint_search">Search for %1$s…</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_filter">Filter search results</string>
+
+    <!-- Non-translatable URLs and identifiers -->
+    <string name="url_telegram" translatable="false">\@ThisPandaCanTalk</string>
+    <string name="url_telegram_full" translatable="false">https://t.me/ThisPandaCanTalk</string>
+    <string name="url_donate" translatable="false">https://ko-fi.com/imjyotiraditya</string>
 </resources>

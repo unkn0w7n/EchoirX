@@ -86,9 +86,9 @@ fun SettingsScreen(
         CrucialSettingsDialog(
             onDismiss = { showResetDialog = false },
             icon = Icons.Outlined.RestartAlt,
-            title = "Reset Settings",
-            description = "Are you sure you want to reset all settings to default? This cannot be undone.",
-            confirmText = "Reset",
+            title = stringResource(R.string.dialog_reset_settings_title),
+            description = stringResource(R.string.dialog_reset_settings_message),
+            confirmText = stringResource(R.string.action_reset),
             onConfirm = {
                 viewModel.resetSettings()
                 showResetDialog = false
@@ -100,9 +100,9 @@ fun SettingsScreen(
         CrucialSettingsDialog(
             onDismiss = { showClearDataDialog = false },
             icon = Icons.Outlined.Delete,
-            title = "Clear App Data",
-            description = "This will clear whole download history and cache. This action cannot be undone.",
-            confirmText = "Clear",
+            title = stringResource(R.string.dialog_clear_data_title),
+            description = stringResource(R.string.dialog_clear_data_message),
+            confirmText = stringResource(R.string.action_clear),
             onConfirm = {
                 viewModel.clearData()
                 showClearDataDialog = false
@@ -127,13 +127,14 @@ fun SettingsScreen(
             .padding(horizontal = 16.dp)
     ) {
         item {
-            PreferenceCategory(title = "Content")
+            PreferenceCategory(title = stringResource(R.string.title_content))
         }
 
         item {
+            val regionName = Region.getDisplayName(Region.fromCode(state.region), context)
             PreferenceItem(
-                title = "Region",
-                subtitle = "${Region.fromCode(state.region).displayName} (${state.region})",
+                title = stringResource(R.string.title_region),
+                subtitle = "$regionName - ${state.region}",
                 icon = Icons.Outlined.Public,
                 onClick = { showRegionDialog = true },
                 position = PreferencePosition.Single
@@ -141,12 +142,12 @@ fun SettingsScreen(
         }
 
         item {
-            PreferenceCategory(title = "Storage")
+            PreferenceCategory(title = stringResource(R.string.title_storage))
         }
 
         item {
             PreferenceItem(
-                title = "Download Location",
+                title = stringResource(R.string.title_download_location),
                 subtitle = state.outputDirectory.toDisplayPath(context),
                 icon = Icons.Outlined.Folder,
                 onClick = {
@@ -162,8 +163,8 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
-                title = "File Naming Format",
-                subtitle = state.fileNamingFormat.displayName,
+                title = stringResource(R.string.title_file_naming_format),
+                subtitle = stringResource(state.fileNamingFormat.displayNameResId),
                 icon = Icons.Outlined.TextFormat,
                 onClick = { showFormatDialog = true },
                 position = PreferencePosition.Bottom
@@ -171,13 +172,13 @@ fun SettingsScreen(
         }
 
         item {
-            PreferenceCategory(title = "Data")
+            PreferenceCategory(title = stringResource(R.string.title_data))
         }
 
         item {
             PreferenceItem(
-                title = "Clear App Data",
-                subtitle = "Clear downloads, cache, and history",
+                title = stringResource(R.string.title_data),
+                subtitle = stringResource(R.string.msg_clear_data_subtitle),
                 icon = Icons.Outlined.Delete,
                 onClick = { showClearDataDialog = true },
                 position = PreferencePosition.Top
@@ -186,8 +187,8 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
-                title = "Reset Settings",
-                subtitle = "Reset all settings to default",
+                title = stringResource(R.string.dialog_reset_settings_title),
+                subtitle = stringResource(R.string.msg_reset_settings_subtitle),
                 icon = Icons.Outlined.RestartAlt,
                 onClick = { showResetDialog = true },
                 position = PreferencePosition.Bottom
@@ -195,13 +196,13 @@ fun SettingsScreen(
         }
 
         item {
-            PreferenceCategory(title = "About")
+            PreferenceCategory(title = stringResource(R.string.title_about))
         }
 
         item {
             PreferenceItem(
                 title = stringResource(R.string.app_name),
-                subtitle = "Version ${BuildConfig.VERSION_NAME}",
+                subtitle = stringResource(R.string.msg_about_version, BuildConfig.VERSION_NAME),
                 icon = Icons.Outlined.Info,
                 position = PreferencePosition.Top,
             )
@@ -209,8 +210,8 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
-                title = "Made with hate",
-                subtitle = "by an exhausted panda running on spite and coffee",
+                title = stringResource(R.string.title_panda),
+                subtitle = stringResource(R.string.msg_panda_subtitle),
                 icon = painterResource(R.drawable.ic_panda),
                 position = PreferencePosition.Middle
             )
@@ -218,13 +219,13 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
-                title = "Telegram Channel",
-                subtitle = "@ThisPandaCanTalk",
+                title = stringResource(R.string.title_telegram_channel),
+                subtitle = stringResource(R.string.url_telegram),
                 icon = Icons.Outlined.Public,
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://t.me/ThisPandaCanTalk")
+                        Uri.parse(context.getString(R.string.url_telegram_full))
                     )
                     context.startActivity(intent)
                 },
@@ -234,13 +235,13 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
-                title = "Support Development on Ko-fi",
-                subtitle = "Help to keep this project alive",
+                title = stringResource(R.string.title_donate),
+                subtitle = stringResource(R.string.msg_donate_subtitle),
                 icon = Icons.Outlined.LocalCafe,
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://ko-fi.com/imjyotiraditya")
+                        Uri.parse(context.getString(R.string.url_donate))
                     )
                     context.startActivity(intent)
                 },

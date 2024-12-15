@@ -16,30 +16,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.domain.model.Download
 import dev.jyotiraditya.echoir.domain.model.DownloadStatus
+import dev.jyotiraditya.echoir.domain.model.QualityConfig
 import dev.jyotiraditya.echoir.presentation.components.TrackCover
+import java.util.Locale
 
 @Composable
 fun DownloadItem(
     download: Download,
     modifier: Modifier = Modifier
 ) {
+    val qualityText = when (download.quality) {
+        "HI_RES_LOSSLESS" -> stringResource(QualityConfig.HiRes.label)
+        "LOSSLESS" -> stringResource(QualityConfig.Lossless.label)
+        "DOLBY_ATMOS" -> if (download.isAc4) {
+            stringResource(QualityConfig.DolbyAtmosAC4.label)
+        } else {
+            stringResource(QualityConfig.DolbyAtmosAC3.label)
+        }
+
+        "HIGH" -> stringResource(QualityConfig.AAC320.label)
+        "LOW" -> stringResource(QualityConfig.AAC96.label)
+        else -> stringResource(R.string.label_unknown)
+    }.uppercase(Locale.getDefault())
+
     ListItem(
         modifier = modifier,
         overlineContent = {
             Text(
-                text = when (download.quality) {
-                    "HI_RES_LOSSLESS" -> "HI-RES"
-                    "LOSSLESS" -> "LOSSLESS"
-                    "DOLBY_ATMOS" -> if (download.isAc4) "DOLBY ATMOS (AC-4)" else "DOLBY ATMOS (AC-3)"
-                    "HIGH" -> "AAC 320"
-                    "LOW" -> "AAC 96"
-                    else -> "UNKNOWN"
-                },
+                text = qualityText,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary
             )
@@ -74,7 +84,7 @@ fun DownloadItem(
                 when (download.status) {
                     DownloadStatus.QUEUED -> {
                         Text(
-                            text = "Queued",
+                            text = stringResource(R.string.label_queued),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -97,7 +107,7 @@ fun DownloadItem(
                     DownloadStatus.COMPLETED -> {
                         Icon(
                             imageVector = Icons.Outlined.Done,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.action_done),
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -106,7 +116,7 @@ fun DownloadItem(
                     DownloadStatus.FAILED -> {
                         Icon(
                             imageVector = Icons.Outlined.Error,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.cd_error),
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -119,7 +129,7 @@ fun DownloadItem(
                 if (download.explicit) {
                     Icon(
                         painter = painterResource(R.drawable.ic_explicit),
-                        contentDescription = "Explicit",
+                        contentDescription = stringResource(R.string.cd_explicit_content),
                         modifier = Modifier.size(16.dp)
                     )
                 }

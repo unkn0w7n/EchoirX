@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dev.jyotiraditya.echoir.R
 import dev.jyotiraditya.echoir.data.notification.DownloadNotificationManager
 import dev.jyotiraditya.echoir.domain.model.DownloadStatus
 import dev.jyotiraditya.echoir.domain.repository.DownloadRepository
@@ -36,13 +37,16 @@ class DownloadWorker @AssistedInject constructor(
         val downloadId =
             inputData.getString(KEY_DOWNLOAD_ID) ?: return createDefaultForegroundInfo()
         val download = downloadRepository.getDownloadById(downloadId)
-        val title = download?.title ?: "Unknown Track"
+        val title = download?.title ?: applicationContext.getString(R.string.label_unknown)
         val isMerging = download?.status == DownloadStatus.MERGING
         val progress = download?.progress ?: 0
 
         return notificationManager.createDownloadNotification(
             downloadId = downloadId,
-            title = if (isMerging) "Processing $title" else "Downloading $title",
+            title = if (isMerging)
+                applicationContext.getString(R.string.notification_processing, title)
+            else
+                applicationContext.getString(R.string.notification_downloading, title),
             progress = progress,
             indeterminate = isMerging
         )
@@ -51,7 +55,7 @@ class DownloadWorker @AssistedInject constructor(
     private fun createDefaultForegroundInfo(): ForegroundInfo {
         return notificationManager.createDownloadNotification(
             downloadId = UUID.randomUUID().toString(),
-            title = "Downloading",
+            title = applicationContext.getString(R.string.notification_progress),
             progress = 0,
             indeterminate = false
         )

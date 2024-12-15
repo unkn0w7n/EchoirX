@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -133,14 +134,17 @@ fun SearchScreen(
                 shape = MaterialTheme.shapes.small,
                 placeholder = {
                     Text(
-                        text = "Search ${state.searchType.title}...",
+                        text = stringResource(
+                            R.string.hint_search,
+                            stringResource(state.searchType.title)
+                        ),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 },
                 leadingIcon = {
                     Icon(
                         painter = painterResource(R.drawable.ic_search),
-                        contentDescription = "Search",
+                        contentDescription = stringResource(R.string.cd_search),
                     )
                 },
                 trailingIcon = {
@@ -150,7 +154,7 @@ fun SearchScreen(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_clear),
-                                contentDescription = "Clear"
+                                contentDescription = stringResource(R.string.cd_clear_search)
                             )
                         }
                     }
@@ -183,7 +187,7 @@ fun SearchScreen(
                         },
                         label = {
                             Text(
-                                text = type.title,
+                                text = stringResource(type.title),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         },
@@ -202,7 +206,7 @@ fun SearchScreen(
                     tooltip = {
                         PlainTooltip {
                             Text(
-                                text = "Filter results"
+                                text = stringResource(R.string.tooltip_filter)
                             )
                         }
                     },
@@ -213,7 +217,7 @@ fun SearchScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.FilterAlt,
-                            contentDescription = "Filter"
+                            contentDescription = stringResource(R.string.cd_filter_button)
                         )
                     }
                 }
@@ -239,12 +243,12 @@ fun SearchScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.AudioFile,
-                        contentDescription = "Format",
+                        contentDescription = stringResource(R.string.cd_filter_quality),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "Quality",
+                        text = stringResource(R.string.title_quality),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -267,7 +271,7 @@ fun SearchScreen(
                             },
                             label = {
                                 Text(
-                                    text = quality.label,
+                                    text = stringResource(quality.label),
                                     style = MaterialTheme.typography.labelLarge
                                 )
                             },
@@ -288,12 +292,12 @@ fun SearchScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Explicit,
-                        contentDescription = "Content",
+                        contentDescription = stringResource(R.string.cd_filter_content),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "Content",
+                        text = stringResource(R.string.title_content),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -318,7 +322,7 @@ fun SearchScreen(
                             },
                             label = {
                                 Text(
-                                    text = contentFilter.label,
+                                    text = stringResource(contentFilter.label),
                                     style = MaterialTheme.typography.labelLarge
                                 )
                             },
@@ -340,8 +344,8 @@ fun SearchScreen(
         when (state.status) {
             SearchStatus.Empty, SearchStatus.Ready -> {
                 EmptyStateMessage(
-                    title = "Search for music",
-                    description = "Enter an artist, album, or track name to start searching.",
+                    title = stringResource(R.string.msg_search_empty),
+                    description = stringResource(R.string.msg_search_empty_desc),
                     painter = painterResource(R.drawable.ic_search)
                 )
             }
@@ -384,8 +388,8 @@ fun SearchScreen(
                     }
                 } else {
                     EmptyStateMessage(
-                        title = "No results found with the given filters",
-                        description = "Try removing the filters or searching for something else.",
+                        title = stringResource(R.string.msg_search_no_results_filters),
+                        description = stringResource(R.string.msg_search_no_results_filters_desc),
                         painter = painterResource(R.drawable.ic_search)
                     )
                 }
@@ -393,8 +397,8 @@ fun SearchScreen(
 
             SearchStatus.NoResults -> {
                 EmptyStateMessage(
-                    title = "No results found",
-                    description = "Try searching for something else.",
+                    title = stringResource(R.string.msg_search_no_results),
+                    description = stringResource(R.string.msg_search_no_results_desc),
                     painter = painterResource(R.drawable.ic_search)
                 )
             }
@@ -409,7 +413,7 @@ fun SearchScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = state.error ?: "An unknown error occurred",
+                            text = state.error ?: stringResource(R.string.msg_unknown_error),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
@@ -418,7 +422,7 @@ fun SearchScreen(
                         FilledTonalButton(
                             onClick = { viewModel.search() }
                         ) {
-                            Text("Retry")
+                            Text(stringResource(R.string.action_retry))
                         }
                     }
                 }
@@ -433,7 +437,10 @@ fun SearchScreen(
                 viewModel.downloadTrack(selectedTrack!!, config)
                 Toast.makeText(
                     context,
-                    "Started downloading in ${config.label} quality",
+                    context.getString(
+                        R.string.msg_download_started,
+                        context.getString(config.label)
+                    ),
                     Toast.LENGTH_SHORT
                 ).show()
             },
