@@ -1,5 +1,6 @@
 package dev.jyotiraditya.echoir.presentation.screens.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.jyotiraditya.echoir.R
+import dev.jyotiraditya.echoir.data.utils.extensions.openAudioFile
 import dev.jyotiraditya.echoir.domain.model.Download
 import dev.jyotiraditya.echoir.domain.model.DownloadStatus
 import dev.jyotiraditya.echoir.domain.model.QualityConfig
@@ -31,6 +34,8 @@ fun DownloadItem(
     download: Download,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     val qualityText = when (download.quality) {
         "HI_RES_LOSSLESS" -> stringResource(QualityConfig.HiRes.label)
         "LOSSLESS" -> stringResource(QualityConfig.Lossless.label)
@@ -46,7 +51,15 @@ fun DownloadItem(
     }.uppercase(Locale.getDefault())
 
     ListItem(
-        modifier = modifier,
+        modifier = modifier.then(
+            if (download.status == DownloadStatus.COMPLETED && !download.filePath.isNullOrEmpty()) {
+                Modifier.clickable {
+                    download.filePath.openAudioFile(context)
+                }
+            } else {
+                Modifier
+            }
+        ),
         overlineContent = {
             Text(
                 text = qualityText,

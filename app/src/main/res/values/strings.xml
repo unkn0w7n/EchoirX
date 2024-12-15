@@ -101,6 +101,9 @@
     <string name="msg_about_version">Version %s</string>
     <string name="msg_panda_subtitle">by an exhausted panda running on spite and coffee</string>
     <string name="msg_donate_subtitle">Help to keep this project alive</string>
+    <string name="msg_file_not_found">File not found</string>
+    <string name="msg_no_player_available">No available music player</string>
+    <string name="msg_file_open_failed">Could not open file</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
