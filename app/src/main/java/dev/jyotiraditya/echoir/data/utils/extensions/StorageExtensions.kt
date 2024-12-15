@@ -9,6 +9,9 @@ import androidx.core.content.FileProvider
 import androidx.documentfile.provider.DocumentFile
 import dev.jyotiraditya.echoir.R
 import java.io.File
+import java.text.DecimalFormat
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * Extension functions for handling storage paths and URIs
@@ -51,6 +54,43 @@ fun String?.toDisplayPath(context: Context): String {
 
         else -> Uri.parse(this).path ?: this
     }.formatLocalPath()
+}
+
+/**
+ * Get file size and format it as a human-readable string
+ */
+fun String?.getFileSize(context: Context): String {
+    if (this == null) return ""
+
+    return try {
+        val size = when {
+            startsWith("content://") -> {
+                val uri = Uri.parse(this)
+                context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                    it.statSize
+                } ?: 0L
+            }
+
+            else -> File(this).length()
+        }
+
+        size.formatFileSize()
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+/**
+ * Format file size into human readable format
+ */
+private fun Long.formatFileSize(): String {
+    if (this <= 0) return "0 B"
+
+    val units = arrayOf("B", "KB", "MB", "GB")
+    val digitGroups = (log10(toDouble()) / log10(1024.0)).toInt()
+
+    val formatter = DecimalFormat("#,##0.#")
+    return "${formatter.format(this / 1024.0.pow(digitGroups))} ${units[digitGroups]}"
 }
 
 /**
