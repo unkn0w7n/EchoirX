@@ -23,11 +23,11 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "dev.jyotiraditya.echoir"
+    namespace = "app.echoirx"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "dev.jyotiraditya.echoir"
+        applicationId = "app.echoirx"
         minSdk = 26
         targetSdk = 35
         versionCode = (100000000 + Instant.now().toEpochMilli() / 1000).toInt()
