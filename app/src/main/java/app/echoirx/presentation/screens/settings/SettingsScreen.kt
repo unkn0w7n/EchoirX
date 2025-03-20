@@ -40,10 +40,10 @@ import app.echoirx.domain.model.Region
 import app.echoirx.presentation.components.preferences.PreferenceCategory
 import app.echoirx.presentation.components.preferences.PreferenceItem
 import app.echoirx.presentation.components.preferences.PreferencePosition
-import app.echoirx.presentation.screens.settings.components.CrucialSettingsDialog
-import app.echoirx.presentation.screens.settings.components.FileNamingFormatDialog
-import app.echoirx.presentation.screens.settings.components.RegionDialog
+import app.echoirx.presentation.screens.settings.components.FileNamingBottomSheet
+import app.echoirx.presentation.screens.settings.components.RegionBottomSheet
 import app.echoirx.presentation.screens.settings.components.ServerBottomSheet
+import app.echoirx.presentation.screens.settings.components.SettingsActionBottomSheet
 
 @Composable
 fun SettingsScreen(
@@ -53,10 +53,10 @@ fun SettingsScreen(
     val focusManager = LocalFocusManager.current
     val state by viewModel.state.collectAsState()
 
-    var showFormatDialog by remember { mutableStateOf(false) }
-    var showResetDialog by remember { mutableStateOf(false) }
-    var showClearDataDialog by remember { mutableStateOf(false) }
-    var showRegionDialog by remember { mutableStateOf(false) }
+    var showFormatSheet by remember { mutableStateOf(false) }
+    var showResetSheet by remember { mutableStateOf(false) }
+    var showClearDataSheet by remember { mutableStateOf(false) }
+    var showRegionSheet by remember { mutableStateOf(false) }
     var showServerSheet by remember { mutableStateOf(false) }
 
     val dirPicker = rememberLauncherForActivityResult(
@@ -79,53 +79,51 @@ fun SettingsScreen(
         }
     }
 
-    if (showFormatDialog) {
-        FileNamingFormatDialog(
+    if (showFormatSheet) {
+        FileNamingBottomSheet(
             selectedFormat = state.fileNamingFormat,
             onSelectFormat = { format ->
                 viewModel.updateFileNamingFormat(format)
-                showFormatDialog = false
             },
-            onDismiss = { showFormatDialog = false }
+            onDismiss = { showFormatSheet = false }
         )
     }
 
-    if (showResetDialog) {
-        CrucialSettingsDialog(
-            onDismiss = { showResetDialog = false },
-            icon = Icons.Outlined.RestartAlt,
+    if (showResetSheet) {
+        SettingsActionBottomSheet(
             title = stringResource(R.string.dialog_reset_settings_title),
             description = stringResource(R.string.dialog_reset_settings_message),
+            icon = Icons.Outlined.RestartAlt,
             confirmText = stringResource(R.string.action_reset),
+            cancelText = stringResource(R.string.action_cancel),
             onConfirm = {
                 viewModel.resetSettings()
-                showResetDialog = false
-            }
+            },
+            onDismiss = { showResetSheet = false }
         )
     }
 
-    if (showClearDataDialog) {
-        CrucialSettingsDialog(
-            onDismiss = { showClearDataDialog = false },
-            icon = Icons.Outlined.Delete,
+    if (showClearDataSheet) {
+        SettingsActionBottomSheet(
             title = stringResource(R.string.dialog_clear_data_title),
             description = stringResource(R.string.dialog_clear_data_message),
+            icon = Icons.Outlined.Delete,
             confirmText = stringResource(R.string.action_clear),
+            cancelText = stringResource(R.string.action_cancel),
             onConfirm = {
                 viewModel.clearData()
-                showClearDataDialog = false
-            }
+            },
+            onDismiss = { showClearDataSheet = false }
         )
     }
 
-    if (showRegionDialog) {
-        RegionDialog(
+    if (showRegionSheet) {
+        RegionBottomSheet(
             selectedRegion = state.region,
             onSelectRegion = { region ->
                 viewModel.updateRegion(region)
-                showRegionDialog = false
             },
-            onDismiss = { showRegionDialog = false }
+            onDismiss = { showRegionSheet = false }
         )
     }
 
@@ -158,7 +156,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.title_region),
                 subtitle = "$regionName - ${state.region}",
                 icon = Icons.Outlined.Public,
-                onClick = { showRegionDialog = true },
+                onClick = { showRegionSheet = true },
                 position = PreferencePosition.Top
             )
         }
@@ -198,7 +196,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.title_file_naming_format),
                 subtitle = stringResource(state.fileNamingFormat.displayNameResId),
                 icon = Icons.Outlined.TextFormat,
-                onClick = { showFormatDialog = true },
+                onClick = { showFormatSheet = true },
                 position = PreferencePosition.Bottom
             )
         }
@@ -212,7 +210,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.title_data),
                 subtitle = stringResource(R.string.msg_clear_data_subtitle),
                 icon = Icons.Outlined.Delete,
-                onClick = { showClearDataDialog = true },
+                onClick = { showClearDataSheet = true },
                 position = PreferencePosition.Top
             )
         }
@@ -222,7 +220,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.dialog_reset_settings_title),
                 subtitle = stringResource(R.string.msg_reset_settings_subtitle),
                 icon = Icons.Outlined.RestartAlt,
-                onClick = { showResetDialog = true },
+                onClick = { showResetSheet = true },
                 position = PreferencePosition.Bottom
             )
         }

@@ -68,6 +68,7 @@
     <string name="label_clean">Clean</string>
     <string name="label_unknown">Unknown</string>
     <string name="label_queued">Queued</string>
+    <string name="label_server_url">Server URL</string>
 
     <!-- Titles -->
     <string name="title_active_downloads">Active downloads</string>
@@ -83,6 +84,8 @@
     <string name="title_telegram_channel">Telegram Channel</string>
     <string name="title_donate">Support development on Ko-fi</string>
     <string name="title_download_location">Download location</string>
+    <string name="title_server">Server</string>
+    <string name="title_server_settings">Server Settings</string>
 
     <!-- Messages -->
     <string name="msg_downloads_empty">No downloads yet</string>
@@ -104,6 +107,9 @@
     <string name="msg_file_not_found">File not found</string>
     <string name="msg_no_player_available">No available music player</string>
     <string name="msg_file_open_failed">Could not open file</string>
+    <string name="msg_server_subtitle">Configure custom server URL</string>
+    <string name="msg_file_naming_desc">Choose how your downloaded files will be named</string>
+    <string name="msg_region_desc">Select your region for content availability</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -127,6 +133,8 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_reset">Reset</string>
     <string name="action_clear">Clear</string>
+    <string name="action_save">Save</string>
+    <string name="action_reset_to_default">Reset to Default</string>
 
     <!-- Quality Labels -->
     <string name="quality_label_hires">Hi-Res Lossless</string>
@@ -157,22 +165,16 @@
 
     <!-- Hints -->
     <string name="hint_search">Search for %1$s…</string>
+    <string name="hint_server_url">https://echoir.vercel.app/api</string>
 
     <!-- Tooltips -->
     <string name="tooltip_filter">Filter search results</string>
+
+    <!-- Errors -->
+    <string name="error_empty_server_url">Server URL cannot be empty</string>
 
     <!-- Non-translatable URLs and identifiers -->
     <string name="url_telegram" translatable="false">\@ThisPandaCanTalk</string>
     <string name="url_telegram_full" translatable="false">https://t.me/ThisPandaCanTalk</string>
     <string name="url_donate" translatable="false">https://ko-fi.com/theladybug</string>
-
-    <!-- Server settings -->
-    <string name="title_server">Server</string>
-    <string name="title_server_settings">Server Settings</string>
-    <string name="label_server_url">Server URL</string>
-    <string name="hint_server_url">https://echoir.vercel.app/api</string>
-    <string name="msg_server_subtitle">Configure custom server URL</string>
-    <string name="action_save">Save</string>
-    <string name="action_reset_to_default">Reset to Default</string>
-    <string name="error_empty_server_url">Server URL cannot be empty</string>
 </resources>
