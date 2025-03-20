@@ -28,9 +28,44 @@ on:
           - universal
         default: 'all'
 
+  pull_request:
+    types: [opened, synchronize]
+
 jobs:
+  pr-build-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Test build with Gradle
+        run: ./gradlew assembleRelease -Pandroid.injected.signing.store-file=NONE --no-daemon
+
+      - name: Auto-merge if build succeeds and actor is Dependabot
+        if: ${{ success() && github.actor == 'dependabot[bot]' }}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout code
