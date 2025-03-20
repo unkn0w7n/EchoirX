@@ -1,6 +1,5 @@
 package app.echoirx.data.remote.api
 
-import app.echoirx.BuildConfig
 import app.echoirx.data.remote.dto.PlaybackResponseDto
 import app.echoirx.data.remote.dto.SearchResultDto
 import app.echoirx.domain.model.PlaybackRequest
@@ -8,7 +7,6 @@ import app.echoirx.domain.repository.SettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.prepareGet
@@ -28,50 +26,48 @@ class ApiService @Inject constructor(
     private val client: HttpClient,
     private val settingsRepository: SettingsRepository
 ) {
-    companion object {
-        private const val BASE_URL = "https://echoir.vercel.app/api"
-        private const val API_KEY = BuildConfig.API_KEY
-    }
+    private suspend fun getBaseUrl(): String = settingsRepository.getServerUrl()
 
     suspend fun search(query: String, type: String): List<SearchResultDto> =
         withContext(Dispatchers.IO) {
             val region = settingsRepository.getRegion()
-            client.get("$BASE_URL/search") {
+            val baseUrl = getBaseUrl()
+
+            client.get("$baseUrl/search") {
                 parameter("query", query)
                 parameter("type", type)
                 parameter("country", region)
-                header("X-API-Key", API_KEY)
             }.body()
         }
 
     suspend fun getAlbumTracks(albumId: Long): List<SearchResultDto> =
         withContext(Dispatchers.IO) {
             val region = settingsRepository.getRegion()
-            client.get("$BASE_URL/album/tracks") {
+            val baseUrl = getBaseUrl()
+
+            client.get("$baseUrl/album/tracks") {
                 parameter("id", albumId)
                 parameter("country", region)
-                header("X-API-Key", API_KEY)
             }.body()
         }
 
     suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponseDto, Map<String, String>> =
         withContext(Dispatchers.IO) {
             val region = settingsRepository.getRegion()
+            val baseUrl = getBaseUrl()
 
             coroutineScope {
                 val playback = async {
-                    client.post("$BASE_URL/track/playback") {
+                    client.post("$baseUrl/track/playback") {
                         contentType(ContentType.Application.Json)
-                        header("X-API-Key", API_KEY)
                         setBody(request.copy(country = region))
                     }.body<PlaybackResponseDto>()
                 }
 
                 val metadata = async {
-                    client.get("$BASE_URL/track/metadata") {
+                    client.get("$baseUrl/track/metadata") {
                         parameter("id", request.id)
                         parameter("country", region)
-                        header("X-API-Key", API_KEY)
                     }.body<Map<String, String>>()
                 }
 
@@ -81,16 +77,14 @@ class ApiService @Inject constructor(
 
     suspend fun downloadFile(url: String): ByteArray =
         withContext(Dispatchers.IO) {
-            client.get(url) {
-                header("X-API-Key", API_KEY)
-            }.body()
+            client.get(url).body()
         }
 
     suspend fun downloadFileToStream(url: String, outputStream: OutputStream) {
         withContext(Dispatchers.IO) {
-            client.prepareGet(url) {
-                header("X-API-Key", API_KEY)
-            }.execute { it.bodyAsChannel().copyTo(outputStream) }
+            client.prepareGet(url).execute {
+                it.bodyAsChannel().copyTo(outputStream)
+            }
         }
     }
 }

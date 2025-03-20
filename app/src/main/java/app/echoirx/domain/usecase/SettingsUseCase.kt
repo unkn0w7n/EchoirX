@@ -19,4 +19,12 @@ class SettingsUseCase @Inject constructor(
     suspend fun getRegion(): String = repository.getRegion()
 
     suspend fun setRegion(region: String) = repository.setRegion(region)
+
+    suspend fun getServerUrl(): String = repository.getServerUrl()
+
+    suspend fun setServerUrl(url: String) = repository.setServerUrl(url)
+
+    suspend fun resetServerSettings() {
+        repository.setServerUrl("https://echoir.vercel.app/api")
+    }
 }

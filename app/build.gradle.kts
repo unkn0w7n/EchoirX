@@ -38,9 +38,6 @@ android {
             "appIcon" to "@mipmap/ic_launcher",
             "appIconRound" to "@mipmap/ic_launcher_round"
         )
-
-        val apiKey = keystoreProperties.getProperty("API_KEY", "")
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     signingConfigs {

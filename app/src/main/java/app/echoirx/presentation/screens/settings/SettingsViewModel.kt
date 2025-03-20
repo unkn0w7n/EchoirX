@@ -31,11 +31,14 @@ class SettingsViewModel @Inject constructor(
             val dir = settingsUseCase.getOutputDirectory()
             val format = settingsUseCase.getFileNamingFormat()
             val region = settingsUseCase.getRegion()
+            val serverUrl = settingsUseCase.getServerUrl()
+
             _state.update {
                 it.copy(
                     outputDirectory = dir,
                     fileNamingFormat = format,
-                    region = region
+                    region = region,
+                    serverUrl = serverUrl
                 )
             }
         }
@@ -74,6 +77,31 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun updateServerUrl(url: String) {
+        if (url.isBlank()) return
+
+        viewModelScope.launch {
+            settingsUseCase.setServerUrl(url)
+            _state.update {
+                it.copy(
+                    serverUrl = url
+                )
+            }
+        }
+    }
+
+    fun resetServerSettings() {
+        val defaultUrl = "https://echoir.vercel.app/api"
+        viewModelScope.launch {
+            settingsUseCase.setServerUrl(defaultUrl)
+            _state.update {
+                it.copy(
+                    serverUrl = defaultUrl
+                )
+            }
+        }
+    }
+
     fun clearData() {
         viewModelScope.launch {
             workManager.cancelAllWork()
@@ -87,12 +115,14 @@ class SettingsViewModel @Inject constructor(
             settingsUseCase.setOutputDirectory(null)
             settingsUseCase.setFileNamingFormat(FileNamingFormat.TITLE_ONLY)
             settingsUseCase.setRegion("BR")
+            settingsUseCase.resetServerSettings()
 
             _state.update {
                 it.copy(
                     outputDirectory = null,
                     fileNamingFormat = FileNamingFormat.TITLE_ONLY,
-                    region = "BR"
+                    region = "BR",
+                    serverUrl = "https://echoir.vercel.app/api"
                 )
             }
         }

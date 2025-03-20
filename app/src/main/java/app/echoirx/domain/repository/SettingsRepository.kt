@@ -9,4 +9,6 @@ interface SettingsRepository {
     suspend fun setFileNamingFormat(format: FileNamingFormat)
     suspend fun getRegion(): String
     suspend fun setRegion(region: String)
+    suspend fun getServerUrl(): String
+    suspend fun setServerUrl(url: String)
 }

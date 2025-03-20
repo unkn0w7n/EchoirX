@@ -165,4 +165,14 @@
     <string name="url_telegram" translatable="false">\@ThisPandaCanTalk</string>
     <string name="url_telegram_full" translatable="false">https://t.me/ThisPandaCanTalk</string>
     <string name="url_donate" translatable="false">https://ko-fi.com/theladybug</string>
+
+    <!-- Server settings -->
+    <string name="title_server">Server</string>
+    <string name="title_server_settings">Server Settings</string>
+    <string name="label_server_url">Server URL</string>
+    <string name="hint_server_url">https://echoir.vercel.app/api</string>
+    <string name="msg_server_subtitle">Configure custom server URL</string>
+    <string name="action_save">Save</string>
+    <string name="action_reset_to_default">Reset to Default</string>
+    <string name="error_empty_server_url">Server URL cannot be empty</string>
 </resources>

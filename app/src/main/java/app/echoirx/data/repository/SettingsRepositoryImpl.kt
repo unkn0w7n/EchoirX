@@ -24,7 +24,11 @@ class SettingsRepositoryImpl @Inject constructor(
         val OUTPUT_DIRECTORY = stringPreferencesKey("output_directory")
         val FILE_NAMING_FORMAT = intPreferencesKey("file_naming_format")
         val REGION = stringPreferencesKey("region")
+        val SERVER_URL = stringPreferencesKey("server_url")
     }
+
+    // Default server URL - use this as the fallback value
+    private val DEFAULT_SERVER_URL = "https://echoir.vercel.app/api"
 
     override suspend fun getOutputDirectory(): String? {
         return context.dataStore.data.first()[PreferencesKeys.OUTPUT_DIRECTORY]
@@ -58,6 +62,16 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setRegion(region: String) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.REGION] = region
+        }
+    }
+
+    override suspend fun getServerUrl(): String {
+        return context.dataStore.data.first()[PreferencesKeys.SERVER_URL] ?: DEFAULT_SERVER_URL
+    }
+
+    override suspend fun setServerUrl(url: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SERVER_URL] = url
         }
     }
 }
