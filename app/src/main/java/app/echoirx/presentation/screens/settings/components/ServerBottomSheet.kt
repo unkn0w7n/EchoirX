@@ -47,6 +47,7 @@ fun ServerBottomSheet(
     val sheetState = rememberModalBottomSheetState()
     var serverUrl by remember { mutableStateOf(currentServer) }
     var showError by remember { mutableStateOf(false) }
+    val defaultServerUrl = "https://example.com/api/echoir"
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -97,7 +98,7 @@ fun ServerBottomSheet(
                     showError = false
                 },
                 label = { Text(stringResource(R.string.label_server_url)) },
-                placeholder = { Text(stringResource(R.string.hint_server_url)) },
+                placeholder = { Text(defaultServerUrl) },
                 singleLine = true,
                 isError = showError,
                 supportingText = {
@@ -132,7 +133,7 @@ fun ServerBottomSheet(
             ) {
                 FilledTonalButton(
                     onClick = {
-                        serverUrl = "https://echoir.vercel.app/api"
+                        serverUrl = defaultServerUrl
                         showError = false
                         onReset()
                         onDismiss()

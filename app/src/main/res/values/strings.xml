@@ -86,6 +86,7 @@
     <string name="title_download_location">Download location</string>
     <string name="title_server">Server</string>
     <string name="title_server_settings">Server Settings</string>
+    <string name="title_server_recommendation">Server Configuration Required</string>
 
     <!-- Messages -->
     <string name="msg_downloads_empty">No downloads yet</string>
@@ -110,6 +111,7 @@
     <string name="msg_server_subtitle">Configure custom server URL</string>
     <string name="msg_file_naming_desc">Choose how your downloaded files will be named</string>
     <string name="msg_region_desc">Select your region for content availability</string>
+    <string name="msg_server_recommendation">You\'re using the example server URL. Please configure a real server URL in the Settings tab to search for and download music.</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -135,6 +137,7 @@
     <string name="action_clear">Clear</string>
     <string name="action_save">Save</string>
     <string name="action_reset_to_default">Reset to Default</string>
+    <string name="action_open_settings">Go to Settings</string>
 
     <!-- Quality Labels -->
     <string name="quality_label_hires">Hi-Res Lossless</string>
@@ -165,13 +168,14 @@
 
     <!-- Hints -->
     <string name="hint_search">Search for %1$s…</string>
-    <string name="hint_server_url">https://echoir.vercel.app/api</string>
+    <string name="hint_server_url">https://example.com/api/echoir</string>
 
     <!-- Tooltips -->
     <string name="tooltip_filter">Filter search results</string>
 
     <!-- Errors -->
     <string name="error_empty_server_url">Server URL cannot be empty</string>
+    <string name="error_example_server">Cannot connect to example server. Please configure a real server URL in Settings.</string>
 
     <!-- Non-translatable URLs and identifiers -->
     <string name="url_telegram" translatable="false">\@ThisPandaCanTalk</string>

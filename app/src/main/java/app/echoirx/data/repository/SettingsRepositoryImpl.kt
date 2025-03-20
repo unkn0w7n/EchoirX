@@ -28,7 +28,7 @@ class SettingsRepositoryImpl @Inject constructor(
     }
 
     // Default server URL - use this as the fallback value
-    private val DEFAULT_SERVER_URL = "https://echoir.vercel.app/api"
+    private val DEFAULT_SERVER_URL = "https://example.com/api/echoir"
 
     override suspend fun getOutputDirectory(): String? {
         return context.dataStore.data.first()[PreferencesKeys.OUTPUT_DIRECTORY]

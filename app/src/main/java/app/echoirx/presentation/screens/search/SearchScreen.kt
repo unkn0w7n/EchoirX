@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.Explicit
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.ContainedLoadingIndicator
@@ -413,30 +414,38 @@ fun SearchScreen(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(16.dp)
                     ) {
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                            tonalElevation = 2.dp
-                        ) {
-                            Text(
-                                text = state.error.formatErrorMessage(
-                                    defaultError = stringResource(R.string.msg_unknown_error)
-                                ),
-                                modifier = Modifier.padding(12.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                fontFamily = FontFamily.Monospace,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                        if (state.showServerRecommendation) {
+                            EmptyStateMessage(
+                                title = stringResource(R.string.title_server_recommendation),
+                                description = stringResource(R.string.msg_server_recommendation),
+                                icon = Icons.Outlined.CloudOff
                             )
-                        }
-                        FilledTonalButton(
-                            onClick = { viewModel.search() }
-                        ) {
-                            Text(stringResource(R.string.action_retry))
+                        } else {
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                tonalElevation = 2.dp
+                            ) {
+                                Text(
+                                    text = state.error.formatErrorMessage(
+                                        defaultError = stringResource(R.string.msg_unknown_error)
+                                    ),
+                                    modifier = Modifier.padding(16.dp),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontFamily = FontFamily.Monospace,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                )
+                            }
+
+                            FilledTonalButton(
+                                onClick = { viewModel.search() }
+                            ) {
+                                Text(stringResource(R.string.action_retry))
+                            }
                         }
                     }
                 }

@@ -25,6 +25,6 @@ class SettingsUseCase @Inject constructor(
     suspend fun setServerUrl(url: String) = repository.setServerUrl(url)
 
     suspend fun resetServerSettings() {
-        repository.setServerUrl("https://echoir.vercel.app/api")
+        repository.setServerUrl("https://example.com/api/echoir")
     }
 }

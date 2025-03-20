@@ -1,13 +1,17 @@
 package app.echoirx.presentation.screens.search
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.echoirx.R
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.QualityConfig
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.usecase.ProcessDownloadUseCase
 import app.echoirx.domain.usecase.SearchUseCase
+import app.echoirx.domain.usecase.SettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,10 +22,16 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
-    private val processDownloadUseCase: ProcessDownloadUseCase
+    private val processDownloadUseCase: ProcessDownloadUseCase,
+    private val settingsUseCase: SettingsUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state.asStateFlow()
+
+    private fun stringResource(resId: Int): String {
+        return context.getString(resId)
+    }
 
     fun onQueryChange(query: String) {
         _state.update {
@@ -100,6 +110,20 @@ class SearchViewModel @Inject constructor(
                     )
                 }
 
+                val serverUrl = settingsUseCase.getServerUrl()
+
+                // Check if using example server before attempting network request
+                if (serverUrl.contains("example.com")) {
+                    _state.update {
+                        it.copy(
+                            error = stringResource(R.string.error_example_server),
+                            status = SearchStatus.Error,
+                            showServerRecommendation = true
+                        )
+                    }
+                    return@launch
+                }
+
                 val results = when (currentState.searchType) {
                     SearchType.TRACKS -> searchUseCase.searchTracks(currentState.query)
                     SearchType.ALBUMS -> searchUseCase.searchAlbums(currentState.query)
@@ -112,14 +136,24 @@ class SearchViewModel @Inject constructor(
                             results,
                             _state.value.searchFilter
                         ),
-                        status = if (results.isEmpty()) SearchStatus.NoResults else SearchStatus.Success
+                        status = if (results.isEmpty()) SearchStatus.NoResults else SearchStatus.Success,
+                        showServerRecommendation = false
                     )
                 }
             } catch (e: Exception) {
+                // Check if the error might be related to the example server
+                val serverUrl = settingsUseCase.getServerUrl()
+                val isExampleServer = serverUrl.contains("example.com") ||
+                        e.message?.contains("example.com") == true
+
                 _state.update {
                     it.copy(
-                        error = e.message,
-                        status = SearchStatus.Error
+                        error = if (isExampleServer)
+                            stringResource(R.string.error_example_server)
+                        else
+                            e.message,
+                        status = SearchStatus.Error,
+                        showServerRecommendation = isExampleServer
                     )
                 }
             }
@@ -142,8 +176,10 @@ class SearchViewModel @Inject constructor(
             it.copy(
                 query = "",
                 results = emptyList(),
+                filteredResults = emptyList(),
                 error = null,
-                status = SearchStatus.Empty
+                status = SearchStatus.Empty,
+                showServerRecommendation = false
             )
         }
     }

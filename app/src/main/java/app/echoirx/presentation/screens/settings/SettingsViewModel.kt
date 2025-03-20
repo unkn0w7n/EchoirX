@@ -26,6 +26,8 @@ class SettingsViewModel @Inject constructor(
     private val _state = MutableStateFlow(SettingsState())
     val state: StateFlow<SettingsState> = _state.asStateFlow()
 
+    private val defaultServerUrl = "https://example.com/api/echoir"
+
     init {
         viewModelScope.launch {
             val dir = settingsUseCase.getOutputDirectory()
@@ -91,12 +93,11 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun resetServerSettings() {
-        val defaultUrl = "https://echoir.vercel.app/api"
         viewModelScope.launch {
-            settingsUseCase.setServerUrl(defaultUrl)
+            settingsUseCase.setServerUrl(defaultServerUrl)
             _state.update {
                 it.copy(
-                    serverUrl = defaultUrl
+                    serverUrl = defaultServerUrl
                 )
             }
         }
@@ -115,14 +116,14 @@ class SettingsViewModel @Inject constructor(
             settingsUseCase.setOutputDirectory(null)
             settingsUseCase.setFileNamingFormat(FileNamingFormat.TITLE_ONLY)
             settingsUseCase.setRegion("BR")
-            settingsUseCase.resetServerSettings()
+            settingsUseCase.setServerUrl(defaultServerUrl)
 
             _state.update {
                 it.copy(
                     outputDirectory = null,
                     fileNamingFormat = FileNamingFormat.TITLE_ONLY,
                     region = "BR",
-                    serverUrl = "https://echoir.vercel.app/api"
+                    serverUrl = defaultServerUrl
                 )
             }
         }
