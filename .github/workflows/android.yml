@@ -55,7 +55,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Test build with Gradle
-        run: ./gradlew assembleRelease -Pandroid.injected.signing.store-file=NONE --no-daemon
+        run: ./gradlew assembleRelease
 
       - name: Auto-merge if build succeeds and actor is Dependabot
         if: ${{ success() && github.actor == 'dependabot[bot]' }}
@@ -94,7 +94,7 @@ jobs:
           mkdir -p "${RUNNER_TEMP}"
           echo -n "${ENCODED_KEYSTORE}" | base64 --decode > "${RUNNER_TEMP}/panda.jks"
 
-      - name: Create keystore.properties
+      - name: Create release keystore
         if: ${{ inputs.release }}
         run: |
           echo "STORE_FILE=${RUNNER_TEMP}/panda.jks" > keystore.properties
@@ -103,13 +103,22 @@ jobs:
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
           echo "API_KEY=${{ secrets.API_KEY }}" >> keystore.properties
 
-      - name: Build Signed Release APKs
-        if: ${{ inputs.release }}
-        run: ./gradlew assembleRelease
-
-      - name: Build Unsigned Release APKs
+      - name: Create debug keystore
         if: ${{ !inputs.release }}
-        run: ./gradlew assembleRelease -Pandroid.injected.signing.store-file=NONE
+        run: |
+          mkdir -p "${RUNNER_TEMP}"
+          keytool -genkey -v -keystore "${RUNNER_TEMP}/debug.keystore" \
+                  -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+                  -storepass android -keypass android \
+                  -dname "CN=Android Debug,O=Android,C=US"
+
+          echo "STORE_FILE=${RUNNER_TEMP}/debug.keystore" > keystore.properties
+          echo "STORE_PASSWORD=android" >> keystore.properties
+          echo "KEY_ALIAS=androiddebugkey" >> keystore.properties
+          echo "KEY_PASSWORD=android" >> keystore.properties
+
+      - name: Build Release APKs
+        run: ./gradlew assembleRelease
 
       - name: Upload APKs as Artifact
         if: ${{ !inputs.release }}
