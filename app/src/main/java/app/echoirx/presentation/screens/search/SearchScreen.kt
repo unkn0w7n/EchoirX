@@ -22,18 +22,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Explicit
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -41,7 +40,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -65,7 +63,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -412,41 +409,22 @@ fun SearchScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        if (state.showServerRecommendation) {
-                            EmptyStateMessage(
-                                title = stringResource(R.string.title_server_recommendation),
-                                description = stringResource(R.string.msg_server_recommendation),
-                                icon = Icons.Outlined.CloudOff
-                            )
-                        } else {
-                            Surface(
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                tonalElevation = 2.dp
-                            ) {
-                                Text(
-                                    text = state.error.formatErrorMessage(
-                                        defaultError = stringResource(R.string.msg_unknown_error)
-                                    ),
-                                    modifier = Modifier.padding(16.dp),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontFamily = FontFamily.Monospace,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-                                )
-                            }
-
-                            FilledTonalButton(
-                                onClick = { viewModel.search() }
-                            ) {
-                                Text(stringResource(R.string.action_retry))
-                            }
-                        }
+                    if (state.showServerRecommendation) {
+                        EmptyStateMessage(
+                            title = stringResource(R.string.title_server_recommendation),
+                            description = stringResource(R.string.msg_server_recommendation),
+                            icon = Icons.Outlined.CloudOff
+                        )
+                    } else {
+                        EmptyStateMessage(
+                            title = stringResource(R.string.msg_unknown_error),
+                            description = state.error.formatErrorMessage(
+                                defaultError = stringResource(R.string.msg_unknown_error)
+                            ),
+                            icon = Icons.Outlined.Error,
+                            buttonText = stringResource(R.string.action_retry),
+                            onButtonClick = { viewModel.search() }
+                        )
                     }
                 }
             }
