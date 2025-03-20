@@ -2,9 +2,9 @@ package app.echoirx.data.repository
 
 import android.content.Context
 import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import app.echoirx.data.local.dao.DownloadDao
 import app.echoirx.data.media.FFmpegProcessor
@@ -55,7 +55,7 @@ class DownloadRepositoryImpl @Inject constructor(
                 }
 
                 else -> {
-                    val uri = Uri.parse(customDir)
+                    val uri = customDir.toUri()
                     val directory = DocumentFile.fromTreeUri(context, uri)
                         ?: throw IOException("Could not access directory")
 
@@ -148,13 +148,13 @@ class DownloadRepositoryImpl @Inject constructor(
                 }
 
                 else -> {
-                    val uri = Uri.parse(customDir)
+                    val uri = customDir.toUri()
                     val directory = DocumentFile.fromTreeUri(context, uri)
                         ?: throw IOException("Could not access directory")
 
                     val targetDir = when {
                         download.albumDirectory != null -> {
-                            DocumentFile.fromTreeUri(context, Uri.parse(download.albumDirectory))
+                            DocumentFile.fromTreeUri(context, download.albumDirectory.toUri())
                                 ?: throw IOException("Could not access album directory")
                         }
 

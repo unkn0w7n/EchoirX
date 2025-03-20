@@ -2,10 +2,10 @@ package app.echoirx.data.utils.extensions
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import app.echoirx.R
 import java.io.File
@@ -24,8 +24,8 @@ fun String?.toDisplayPath(context: Context): String {
             File(musicDir, "Echoir").path.formatLocalPath()
         }
 
-        Uri.parse(this).scheme == "content" -> {
-            val uri = Uri.parse(this)
+        this.toUri().scheme == "content" -> {
+            val uri = this.toUri()
 
             val treePath = uri.pathSegments
                 .firstOrNull { it.contains(":") }
@@ -52,7 +52,7 @@ fun String?.toDisplayPath(context: Context): String {
             }
         }
 
-        else -> Uri.parse(this).path ?: this
+        else -> this.toUri().path ?: this
     }.formatLocalPath()
 }
 
@@ -65,7 +65,7 @@ fun String?.getFileSize(context: Context): String {
     return try {
         val size = when {
             startsWith("content://") -> {
-                val uri = Uri.parse(this)
+                val uri = this.toUri()
                 context.contentResolver.openFileDescriptor(uri, "r")?.use {
                     it.statSize
                 } ?: 0L
@@ -75,7 +75,7 @@ fun String?.getFileSize(context: Context): String {
         }
 
         size.formatFileSize()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         ""
     }
 }
@@ -118,7 +118,7 @@ fun String?.openAudioFile(context: Context): Boolean {
 
     return try {
         val uri = when {
-            startsWith("content://") -> Uri.parse(this)
+            startsWith("content://") -> this.toUri()
             else -> {
                 val file = File(this)
                 FileProvider.getUriForFile(
@@ -145,7 +145,7 @@ fun String?.openAudioFile(context: Context): Boolean {
             ).show()
             false
         }
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         Toast.makeText(
             context,
             context.getString(R.string.msg_file_open_failed),

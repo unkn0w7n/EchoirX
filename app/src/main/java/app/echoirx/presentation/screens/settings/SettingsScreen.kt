@@ -2,7 +2,6 @@ package app.echoirx.presentation.screens.settings
 
 import android.Manifest
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +31,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.echoirx.BuildConfig
 import app.echoirx.R
@@ -44,7 +44,6 @@ import app.echoirx.presentation.screens.settings.components.CrucialSettingsDialo
 import app.echoirx.presentation.screens.settings.components.FileNamingFormatDialog
 import app.echoirx.presentation.screens.settings.components.RegionDialog
 import app.echoirx.presentation.screens.settings.components.ServerBottomSheet
-import androidx.core.net.toUri
 
 @Composable
 fun SettingsScreen(
@@ -258,7 +257,7 @@ fun SettingsScreen(
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(context.getString(R.string.url_telegram_full))
+                        context.getString(R.string.url_telegram_full).toUri()
                     )
                     context.startActivity(intent)
                 },
@@ -274,7 +273,7 @@ fun SettingsScreen(
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(context.getString(R.string.url_donate))
+                        context.getString(R.string.url_donate).toUri()
                     )
                     context.startActivity(intent)
                 },
