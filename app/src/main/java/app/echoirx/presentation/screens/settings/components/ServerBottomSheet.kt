@@ -3,17 +3,22 @@ package app.echoirx.presentation.screens.settings.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudQueue
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,6 +52,7 @@ fun ServerBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         shape = MaterialTheme.shapes.small,
+        dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         modifier = modifier
     ) {
@@ -54,12 +60,35 @@ fun ServerBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(
-                text = stringResource(R.string.title_server_settings),
-                style = MaterialTheme.typography.titleLarge
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudQueue,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.title_server_settings),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.msg_server_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             OutlinedTextField(
                 value = serverUrl,
@@ -98,20 +127,23 @@ fun ServerBottomSheet(
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)
             ) {
-                TextButton(onClick = {
-                    serverUrl = "https://echoir.vercel.app/api"
-                    showError = false
-                    onReset()
-                }) {
+                FilledTonalButton(
+                    onClick = {
+                        serverUrl = "https://echoir.vercel.app/api"
+                        showError = false
+                        onReset()
+                        onDismiss()
+                    }
+                ) {
                     Text(stringResource(R.string.action_reset_to_default))
                 }
 
-                FilledTonalButton(
+                Spacer(modifier = Modifier.weight(1f))
+
+                Button(
                     onClick = {
                         focusManager.clearFocus()
                         if (serverUrl.isNotBlank()) {
