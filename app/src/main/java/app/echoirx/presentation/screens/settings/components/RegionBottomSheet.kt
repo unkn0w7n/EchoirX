@@ -1,16 +1,18 @@
 package app.echoirx.presentation.screens.settings.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Public
@@ -20,16 +22,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.echoirx.R
 import app.echoirx.domain.model.Region
@@ -48,7 +52,7 @@ fun RegionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.large,
         dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         modifier = modifier
@@ -90,29 +94,41 @@ fun RegionBottomSheet(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(64.dp * 4) ,
+                    .height(64.dp * 4),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(Region.entries) { region ->
                     val isSelected = region.code == selectedRegion
-                    val backgroundColor = if (isSelected) {
-                        MaterialTheme.colorScheme.secondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    }
-                    val contentColor = if (isSelected) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
+
+                    // Animate color and elevation changes
+                    val backgroundColor by animateColorAsState(
+                        targetValue = if (isSelected)
+                            MaterialTheme.colorScheme.secondaryContainer
+                        else
+                            MaterialTheme.colorScheme.surface,
+                        label = "background color"
+                    )
+
+                    val elevation by animateDpAsState(
+                        targetValue = if (isSelected) 4.dp else 1.dp,
+                        label = "elevation"
+                    )
 
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .clickable { onSelectRegion(region.code) },
+                            .selectable(
+                                selected = isSelected,
+                                onClick = { onSelectRegion(region.code) },
+                                role = Role.RadioButton
+                            ),
                         color = backgroundColor,
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        tonalElevation = elevation,
+                        border = if (!isSelected)
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                        else null
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
@@ -121,23 +137,21 @@ fun RegionBottomSheet(
                         ) {
                             RadioButton(
                                 selected = isSelected,
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = MaterialTheme.colorScheme.secondary,
-                                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                                onClick = null
                             )
-                            Text(
-                                text = Region.getDisplayName(region, context),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = contentColor,
+                            Column(
                                 modifier = Modifier.weight(1f)
-                            )
-                            if (isSelected) {
+                            ) {
+                                Text(
+                                    text = Region.getDisplayName(region, context),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                                )
+
                                 Text(
                                     text = region.code,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = contentColor.copy(alpha = 0.7f)
+                                    color = MaterialTheme.colorScheme.secondary
                                 )
                             }
                         }

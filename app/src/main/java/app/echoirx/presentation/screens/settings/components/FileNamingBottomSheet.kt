@@ -1,6 +1,8 @@
 package app.echoirx.presentation.screens.settings.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.TextFormat
@@ -19,15 +22,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.echoirx.R
 import app.echoirx.domain.model.FileNamingFormat
@@ -45,7 +50,7 @@ fun FileNamingBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.large,
         dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         modifier = modifier
@@ -92,24 +97,42 @@ fun FileNamingBottomSheet(
             ) {
                 items(FileNamingFormat.entries) { format ->
                     val isSelected = format == selectedFormat
-                    val backgroundColor = if (isSelected) {
-                        MaterialTheme.colorScheme.secondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    }
-                    val contentColor = if (isSelected) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
+
+                    // Animate color and elevation changes
+                    val backgroundColor by animateColorAsState(
+                        targetValue = if (isSelected)
+                            MaterialTheme.colorScheme.secondaryContainer
+                        else
+                            MaterialTheme.colorScheme.surface,
+                        label = "background color"
+                    )
+
+                    val elevation by animateDpAsState(
+                        targetValue = if (isSelected) 4.dp else 1.dp,
+                        label = "elevation"
+                    )
+
+                    val previewText = when (format) {
+                        FileNamingFormat.ARTIST_TITLE -> "Artist - Title.mp3"
+                        FileNamingFormat.TITLE_ARTIST -> "Title - Artist.mp3"
+                        FileNamingFormat.TITLE_ONLY -> "Title.mp3"
                     }
 
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .clickable { onSelectFormat(format) },
+                            .selectable(
+                                selected = isSelected,
+                                onClick = { onSelectFormat(format) },
+                                role = Role.RadioButton
+                            ),
                         color = backgroundColor,
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        tonalElevation = elevation,
+                        border = if (!isSelected)
+                            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                        else null
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
@@ -118,17 +141,29 @@ fun FileNamingBottomSheet(
                         ) {
                             RadioButton(
                                 selected = isSelected,
-                                onClick = null,
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = MaterialTheme.colorScheme.secondary,
-                                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                onClick = null
+                            )
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(format.displayNameResId),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                    color = if (isSelected)
+                                        MaterialTheme.colorScheme.onSecondaryContainer
+                                    else
+                                        MaterialTheme.colorScheme.onSurface
                                 )
-                            )
-                            Text(
-                                text = stringResource(format.displayNameResId),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = contentColor
-                            )
+
+                                Text(
+                                    text = previewText,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (isSelected)
+                                        MaterialTheme.colorScheme.secondary
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }
