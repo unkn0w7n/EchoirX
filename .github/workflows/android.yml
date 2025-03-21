@@ -1,5 +1,9 @@
 name: Android CI
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch:
     inputs:
@@ -59,10 +63,9 @@ jobs:
 
       - name: Auto-merge if build succeeds and actor is Dependabot
         if: ${{ success() && github.actor == 'dependabot[bot]' }}
-        run: gh pr merge --auto --merge "$PR_URL"
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}"
 
   build:
     runs-on: ubuntu-latest
@@ -132,7 +135,7 @@ jobs:
       - name: Create Release
         if: ${{ inputs.release }}
         env:
-          GH_TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(grep -A5 'defaultConfig {' app/build.gradle.kts | grep 'versionName' | awk -F '"' '{print $2}')
           gh release create "v${VERSION}" \
