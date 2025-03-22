@@ -65,7 +65,7 @@ jobs:
         if: ${{ success() && github.actor == 'dependabot[bot]' }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}"
+        run: gh pr merge --auto --rebase "${{ github.event.pull_request.html_url }}"
 
   build:
     runs-on: ubuntu-latest
