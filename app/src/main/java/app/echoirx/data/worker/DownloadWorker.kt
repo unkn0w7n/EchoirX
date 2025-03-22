@@ -13,6 +13,7 @@ import app.echoirx.domain.model.DownloadStatus
 import app.echoirx.domain.repository.DownloadRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
 import java.util.UUID
 
 @HiltWorker
@@ -107,17 +108,32 @@ class DownloadWorker @AssistedInject constructor(
                         downloadId = downloadId,
                         title = it.title
                     )
-                }
+                } ?: notificationManager.showErrorNotification(
+                    downloadId = downloadId,
+                    title = applicationContext.getString(R.string.label_unknown)
+                )
                 Result.failure()
             }
-        } catch (e: Exception) {
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
             val download = downloadRepository.getDownloadById(downloadId)
             download?.let {
                 notificationManager.showErrorNotification(
                     downloadId = downloadId,
                     title = it.title
                 )
+            } ?: notificationManager.showErrorNotification(
+                downloadId = downloadId,
+                title = applicationContext.getString(R.string.label_unknown)
+            )
+
+            try {
+                downloadRepository.updateDownloadStatus(downloadId, DownloadStatus.FAILED)
+            } catch (_: Exception) {
+                // Silently ignore database errors during cleanup
             }
+
             Result.failure()
         } finally {
             queueManager.decrementActiveDownloads()
