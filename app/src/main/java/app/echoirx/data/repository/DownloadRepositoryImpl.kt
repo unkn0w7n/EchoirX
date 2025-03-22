@@ -19,10 +19,14 @@ import app.echoirx.domain.repository.DownloadRepository
 import app.echoirx.domain.repository.SettingsRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import java.util.Collections
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -201,20 +205,36 @@ class DownloadRepositoryImpl @Inject constructor(
         urls: List<String>,
         outputFile: File,
         onProgress: suspend (Int) -> Unit
-    ) {
-        val tempFiles = urls.mapIndexed { index, url ->
-            val tempFile =
-                File(context.cacheDir, "${outputFile.nameWithoutExtension}_part_$index.tmp")
-            val response = apiService.downloadFile(url)
-            tempFile.writeBytes(response)
-            onProgress((index + 1) * 100 / urls.size)
-            tempFile
+    ) = coroutineScope {
+        val tempFiles = urls.mapIndexed { index, _ ->
+            index to File(context.cacheDir, "${outputFile.nameWithoutExtension}_part_$index.tmp")
+        }.toMap()
+
+        val completedIndices = Collections.synchronizedSet(mutableSetOf<Int>())
+
+        val downloadJobs = urls.mapIndexed { index, url ->
+            async(Dispatchers.IO) {
+                try {
+                    val tempFile = tempFiles[index]
+                    val response = apiService.downloadFile(url)
+                    tempFile?.writeBytes(response)
+                    completedIndices.add(index)
+                    onProgress((completedIndices.size * 100) / urls.size)
+                    true
+                } catch (e: Exception) {
+                    false
+                }
+            }
         }
 
+        downloadJobs.awaitAll()
+
         outputFile.outputStream().use { output ->
-            tempFiles.forEach { input ->
-                input.inputStream().use { it.copyTo(output) }
-                input.delete()
+            for (i in urls.indices) {
+                tempFiles[i]?.let { input ->
+                    input.inputStream().use { it.copyTo(output) }
+                    input.delete()
+                }
             }
         }
     }
