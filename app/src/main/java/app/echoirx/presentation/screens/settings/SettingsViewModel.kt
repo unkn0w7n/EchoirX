@@ -94,7 +94,7 @@ class SettingsViewModel @Inject constructor(
 
     fun resetServerSettings() {
         viewModelScope.launch {
-            settingsUseCase.setServerUrl(defaultServerUrl)
+            settingsUseCase.resetServerSettings()
             _state.update {
                 it.copy(
                     serverUrl = defaultServerUrl
@@ -116,7 +116,7 @@ class SettingsViewModel @Inject constructor(
             settingsUseCase.setOutputDirectory(null)
             settingsUseCase.setFileNamingFormat(FileNamingFormat.TITLE_ONLY)
             settingsUseCase.setRegion("BR")
-            settingsUseCase.setServerUrl(defaultServerUrl)
+            settingsUseCase.resetServerSettings()
 
             _state.update {
                 it.copy(
