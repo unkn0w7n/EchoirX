@@ -1,7 +1,9 @@
 package app.echoirx.presentation.screens.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -92,10 +94,39 @@ fun DownloadItem(
             )
         },
         leadingContent = {
-            TrackCover(
-                url = download.cover,
-                size = 56.dp
-            )
+            Box {
+                TrackCover(
+                    url = download.cover,
+                    size = 56.dp
+                )
+
+                if (download.status == DownloadStatus.DOWNLOADING || download.status == DownloadStatus.MERGING) {
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                shape = MaterialTheme.shapes.extraSmall
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (download.status == DownloadStatus.DOWNLOADING) {
+                            CircularProgressIndicator(
+                                progress = { download.progress / 100f },
+                                modifier = Modifier.size(40.dp),
+                                strokeWidth = 3.dp,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        } else {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(40.dp),
+                                strokeWidth = 3.dp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+            }
         },
         trailingContent = {
             Column(
@@ -106,22 +137,25 @@ fun DownloadItem(
                     DownloadStatus.QUEUED -> {
                         Text(
                             text = stringResource(R.string.label_queued),
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+
                         )
                     }
 
                     DownloadStatus.DOWNLOADING -> {
-                        CircularProgressIndicator(
-                            progress = { download.progress / 100f },
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp
+                        Text(
+                            text = "${download.progress}%",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
                     DownloadStatus.MERGING -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp
+                        Text(
+                            text = stringResource(R.string.label_processing),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 

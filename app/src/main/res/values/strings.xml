@@ -69,6 +69,7 @@
     <string name="label_unknown">Unknown</string>
     <string name="label_queued">Queued</string>
     <string name="label_server_url">Server URL</string>
+    <string name="label_processing">Processing</string>
 
     <!-- Titles -->
     <string name="title_active_downloads">Active downloads</string>

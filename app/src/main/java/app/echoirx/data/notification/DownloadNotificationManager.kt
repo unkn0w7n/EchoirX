@@ -23,6 +23,8 @@ class DownloadNotificationManager @Inject constructor(
     private val notificationManager: NotificationManager =
         context.getSystemService(NotificationManager::class.java)
 
+    private val activeDownloads = mutableSetOf<String>()
+
     init {
         createNotificationChannel()
     }
@@ -63,6 +65,8 @@ class DownloadNotificationManager @Inject constructor(
         progress: Int,
         indeterminate: Boolean
     ): ForegroundInfo {
+        activeDownloads.add(downloadId)
+
         val notification = buildNotification(
             title = title,
             progress = progress,
@@ -92,6 +96,8 @@ class DownloadNotificationManager @Inject constructor(
     }
 
     fun showCompletionNotification(downloadId: String, title: String) {
+        activeDownloads.remove(downloadId)
+
         notificationManager.notify(
             downloadId.hashCode(),
             buildNotification(
@@ -105,6 +111,8 @@ class DownloadNotificationManager @Inject constructor(
     }
 
     fun showErrorNotification(downloadId: String, title: String) {
+        activeDownloads.remove(downloadId)
+
         notificationManager.notify(
             downloadId.hashCode(),
             buildNotification(
@@ -118,12 +126,18 @@ class DownloadNotificationManager @Inject constructor(
     }
 
     private fun updateSummaryNotification() {
-        notificationManager.notify(
-            SUMMARY_ID,
-            buildNotification(
-                title = context.getString(R.string.notification_progress),
-                ongoing = true
-            ).apply { flags = flags or NotificationCompat.FLAG_GROUP_SUMMARY }
-        )
+        if (activeDownloads.isEmpty()) {
+            notificationManager.cancel(SUMMARY_ID)
+        } else {
+            notificationManager.notify(
+                SUMMARY_ID,
+                buildNotification(
+                    title = context.getString(R.string.notification_progress),
+                    ongoing = true
+                ).apply {
+                    flags = flags or NotificationCompat.FLAG_GROUP_SUMMARY
+                }
+            )
+        }
     }
 }
