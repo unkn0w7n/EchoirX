@@ -51,7 +51,6 @@
     <string name="cd_filter_button">Filter results</string>
     <string name="cd_download_button">Download options</string>
     <string name="cd_download_option">Download option: %s</string>
-    <string name="cd_info_button">Information about AAC quality</string>
     <string name="cd_explicit_content">Explicit content</string>
     <string name="cd_dolby_atmos">Dolby Atmos supported</string>
     <string name="cd_track_image">Track artwork</string>
@@ -97,7 +96,6 @@
     <string name="msg_search_no_results_filters_desc">Try adjusting your filter settings</string>
     <string name="msg_unknown_error">An unknown error occurred</string>
     <string name="msg_download_started">Started downloading in %1$s quality</string>
-    <string name="msg_aac_quality_note">While downloading AAC tracks, the service may occasionally deliver 96 kbps instead of 320 kbps based on various factors</string>
     <string name="msg_clear_data_subtitle">Clear download history and cache</string>
     <string name="msg_reset_settings_subtitle">Reset all settings to defaults</string>
     <string name="msg_about_version">Version %s</string>
