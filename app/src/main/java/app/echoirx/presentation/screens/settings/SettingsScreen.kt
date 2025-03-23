@@ -15,7 +15,6 @@ import androidx.compose.material.icons.outlined.CloudQueue
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.LocalCafe
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.TextFormat
@@ -28,10 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.echoirx.BuildConfig
 import app.echoirx.R
@@ -234,48 +231,7 @@ fun SettingsScreen(
                 title = stringResource(R.string.app_name),
                 subtitle = stringResource(R.string.msg_about_version, BuildConfig.VERSION_NAME),
                 icon = Icons.Outlined.Info,
-                position = PreferencePosition.Top,
-            )
-        }
-
-        item {
-            PreferenceItem(
-                title = stringResource(R.string.title_ladybug),
-                subtitle = stringResource(R.string.msg_ladybug_subtitle),
-                icon = painterResource(R.drawable.ic_handshake),
-                position = PreferencePosition.Middle
-            )
-        }
-
-        item {
-            PreferenceItem(
-                title = stringResource(R.string.title_telegram_channel),
-                subtitle = stringResource(R.string.url_telegram),
-                icon = Icons.Outlined.Public,
-                onClick = {
-                    val intent = Intent(
-                        Intent.ACTION_VIEW,
-                        context.getString(R.string.url_telegram_full).toUri()
-                    )
-                    context.startActivity(intent)
-                },
-                position = PreferencePosition.Middle
-            )
-        }
-
-        item {
-            PreferenceItem(
-                title = stringResource(R.string.title_donate),
-                subtitle = stringResource(R.string.msg_donate_subtitle),
-                icon = Icons.Outlined.LocalCafe,
-                onClick = {
-                    val intent = Intent(
-                        Intent.ACTION_VIEW,
-                        context.getString(R.string.url_donate).toUri()
-                    )
-                    context.startActivity(intent)
-                },
-                position = PreferencePosition.Bottom
+                position = PreferencePosition.Single,
             )
         }
 

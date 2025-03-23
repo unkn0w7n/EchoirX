@@ -80,9 +80,6 @@
     <string name="title_about">About</string>
     <string name="title_quality">Quality</string>
     <string name="title_content">Content</string>
-    <string name="title_ladybug">Made by Guardian of Sorrows</string>
-    <string name="title_telegram_channel">Telegram Channel</string>
-    <string name="title_donate">Support development on Ko-fi</string>
     <string name="title_download_location">Download location</string>
     <string name="title_server">Server</string>
     <string name="title_server_settings">Server Settings</string>
@@ -103,8 +100,6 @@
     <string name="msg_clear_data_subtitle">Clear download history and cache</string>
     <string name="msg_reset_settings_subtitle">Reset all settings to defaults</string>
     <string name="msg_about_version">Version %s</string>
-    <string name="msg_ladybug_subtitle">carrying your sorrows, one spot at a time</string>
-    <string name="msg_donate_subtitle">Help to keep this project alive</string>
     <string name="msg_file_not_found">File not found</string>
     <string name="msg_no_player_available">No available music player</string>
     <string name="msg_file_open_failed">Could not open file</string>
@@ -177,8 +172,4 @@
     <string name="error_empty_server_url">Server URL cannot be empty</string>
     <string name="error_example_server">Cannot connect to example server. Please configure a real server URL in Settings.</string>
 
-    <!-- Non-translatable URLs and identifiers -->
-    <string name="url_telegram" translatable="false">\@ThisPandaCanTalk</string>
-    <string name="url_telegram_full" translatable="false">https://t.me/ThisPandaCanTalk</string>
-    <string name="url_donate" translatable="false">https://ko-fi.com/theladybug</string>
 </resources>
