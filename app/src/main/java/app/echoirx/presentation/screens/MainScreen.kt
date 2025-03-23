@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavHostController
@@ -31,6 +34,7 @@ fun MainScreen(navController: NavHostController) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route?.let { Route.fromPath(it) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier
@@ -49,6 +53,9 @@ fun MainScreen(navController: NavHostController) {
                 currentRoute = currentRoute
             )
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         NavHost(
@@ -57,10 +64,10 @@ fun MainScreen(navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Route.Home.path) {
-                HomeScreen()
+                HomeScreen(snackbarHostState = snackbarHostState)
             }
             composable(Route.Search.Main.path) {
-                SearchScreen(navController)
+                SearchScreen(navController, snackbarHostState = snackbarHostState)
             }
             composable(
                 route = Route.Search.Details().createRoute(),
@@ -76,7 +83,7 @@ fun MainScreen(navController: NavHostController) {
                     ?.get<SearchResult>("result")
 
                 if (type != null && id != null && result != null) {
-                    DetailsScreen(result)
+                    DetailsScreen(result, snackbarHostState = snackbarHostState)
                 }
             }
             composable(Route.Settings.path) {

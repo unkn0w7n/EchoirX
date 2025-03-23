@@ -11,8 +11,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,9 +34,11 @@ import java.util.Locale
 @Composable
 fun DownloadItem(
     download: Download,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val qualityText = when (download.quality) {
         "HI_RES_LOSSLESS" -> stringResource(QualityConfig.HiRes.label)
@@ -54,7 +58,11 @@ fun DownloadItem(
         modifier = modifier.then(
             if (download.status == DownloadStatus.COMPLETED && !download.filePath.isNullOrEmpty()) {
                 Modifier.clickable {
-                    download.filePath.openAudioFile(context)
+                    download.filePath.openAudioFile(
+                        context,
+                        snackbarHostState,
+                        coroutineScope
+                    )
                 }
             } else {
                 Modifier

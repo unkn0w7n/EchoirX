@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +24,8 @@ import app.echoirx.presentation.screens.home.components.DownloadItem
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -74,7 +76,10 @@ fun HomeScreen(
                         items = state.activeDownloads,
                         key = { it.downloadId }
                     ) { download ->
-                        DownloadItem(download = download)
+                        DownloadItem(
+                            download = download,
+                            snackbarHostState = snackbarHostState
+                        )
                     }
                 }
 
@@ -96,7 +101,10 @@ fun HomeScreen(
                         items = state.downloadHistory,
                         key = { it.downloadId }
                     ) { download ->
-                        DownloadItem(download = download)
+                        DownloadItem(
+                            download = download,
+                            snackbarHostState = snackbarHostState
+                        )
                     }
                 }
             }

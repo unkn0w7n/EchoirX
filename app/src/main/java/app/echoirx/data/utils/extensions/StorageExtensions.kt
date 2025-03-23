@@ -3,11 +3,12 @@ package app.echoirx.data.utils.extensions
 import android.content.Context
 import android.content.Intent
 import android.os.Environment
-import android.widget.Toast
+import androidx.compose.material3.SnackbarHostState
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import app.echoirx.R
+import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.text.DecimalFormat
 import kotlin.math.log10
@@ -105,14 +106,22 @@ private fun String.formatLocalPath(): String {
 /**
  * Opens an audio file with the system's audio player
  * Returns true if the file was opened successfully, false otherwise
+ *
+ * @param context The context
+ * @param snackbarHostState SnackbarHostState to show error messages
+ * @param coroutineScope CoroutineScope to launch snackbar in
+ * @return True if file was opened successfully, false otherwise
  */
-fun String?.openAudioFile(context: Context): Boolean {
+fun String?.openAudioFile(
+    context: Context,
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope
+): Boolean {
     if (this == null) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.msg_file_not_found),
-            Toast.LENGTH_SHORT
-        ).show()
+        snackbarHostState.showSnackbar(
+            scope = coroutineScope,
+            message = context.getString(R.string.msg_file_not_found)
+        )
         return false
     }
 
@@ -138,19 +147,17 @@ fun String?.openAudioFile(context: Context): Boolean {
             context.startActivity(Intent.createChooser(intent, null))
             true
         } else {
-            Toast.makeText(
-                context,
-                context.getString(R.string.msg_no_player_available),
-                Toast.LENGTH_SHORT
-            ).show()
+            snackbarHostState.showSnackbar(
+                scope = coroutineScope,
+                message = context.getString(R.string.msg_no_player_available)
+            )
             false
         }
     } catch (_: Exception) {
-        Toast.makeText(
-            context,
-            context.getString(R.string.msg_file_open_failed),
-            Toast.LENGTH_SHORT
-        ).show()
+        snackbarHostState.showSnackbar(
+            scope = coroutineScope,
+            message = context.getString(R.string.msg_file_open_failed)
+        )
         false
     }
 }

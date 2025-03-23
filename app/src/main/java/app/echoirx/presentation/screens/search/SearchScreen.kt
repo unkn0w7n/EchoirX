@@ -1,6 +1,5 @@
 package app.echoirx.presentation.screens.search
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -40,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -52,6 +52,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -69,6 +70,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import app.echoirx.R
 import app.echoirx.data.utils.extensions.formatErrorMessage
+import app.echoirx.data.utils.extensions.showSnackbar
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.components.EmptyStateMessage
 import app.echoirx.presentation.components.TrackBottomSheet
@@ -82,13 +84,15 @@ import app.echoirx.presentation.screens.search.components.SearchResultItem
 @Composable
 fun SearchScreen(
     navController: NavController,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
     val state by viewModel.state.collectAsState()
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
 
     var selectedTrack by remember { mutableStateOf<SearchResult?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -436,14 +440,13 @@ fun SearchScreen(
             track = selectedTrack!!,
             onDownload = { config ->
                 viewModel.downloadTrack(selectedTrack!!, config)
-                Toast.makeText(
-                    context,
-                    context.getString(
+                snackbarHostState.showSnackbar(
+                    scope = coroutineScope,
+                    message = context.getString(
                         R.string.msg_download_started,
                         context.getString(config.label)
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
+                    )
+                )
             },
             onDismiss = { showBottomSheet = false }
         )

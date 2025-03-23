@@ -1,6 +1,5 @@
 package app.echoirx.presentation.screens.details
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.echoirx.R
+import app.echoirx.data.utils.extensions.showSnackbar
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.components.DownloadOptions
 import app.echoirx.presentation.components.TrackBottomSheet
@@ -46,10 +48,12 @@ import app.echoirx.presentation.components.TrackCover
 @Composable
 fun DetailsScreen(
     result: SearchResult,
-    viewModel: DetailsViewModel = hiltViewModel()
+    viewModel: DetailsViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     var selectedTrack by remember { mutableStateOf<SearchResult?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -127,14 +131,13 @@ fun DetailsScreen(
                 modes = result.modes,
                 onOptionSelected = { config ->
                     viewModel.downloadAlbum(config)
-                    Toast.makeText(
-                        context,
-                        context.getString(
+                    snackbarHostState.showSnackbar(
+                        scope = coroutineScope,
+                        message = context.getString(
                             R.string.msg_download_started,
                             context.getString(config.label)
-                        ),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        )
+                    )
                 }
             )
         }
@@ -251,11 +254,13 @@ fun DetailsScreen(
             track = selectedTrack!!,
             onDownload = { config ->
                 viewModel.downloadTrack(selectedTrack!!, config)
-                Toast.makeText(
-                    context,
-                    R.string.msg_download_started,
-                    Toast.LENGTH_SHORT
-                ).show()
+                snackbarHostState.showSnackbar(
+                    scope = coroutineScope,
+                    message = context.getString(
+                        R.string.msg_download_started,
+                        context.getString(config.label)
+                    )
+                )
             },
             onDismiss = { showBottomSheet = false }
         )
