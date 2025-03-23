@@ -24,6 +24,10 @@ private fun extractMessageFromJson(jsonString: String): String? {
     return try {
         val json = JSONObject(jsonString)
 
+        if (json.has("detail") && !json.isNull("detail")) {
+            return json.getString("detail")
+        }
+
         if (json.has("message") && !json.isNull("message")) {
             return json.getString("message")
         }
