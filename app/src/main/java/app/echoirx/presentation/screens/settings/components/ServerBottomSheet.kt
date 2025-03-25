@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,7 +48,25 @@ fun ServerBottomSheet(
     val sheetState = rememberModalBottomSheetState()
     var serverUrl by remember { mutableStateOf(currentServer) }
     var showError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     val defaultServerUrl = "https://example.com/api/echoir"
+    val context = LocalContext.current
+
+    fun cleanUrl(url: String): String {
+        return url.trim().replace("\\s+".toRegex(), "")
+    }
+
+    fun validateAndSave() {
+        focusManager.clearFocus()
+        if (serverUrl.isNotBlank()) {
+            val cleanedUrl = cleanUrl(serverUrl)
+            onSave(cleanedUrl)
+            onDismiss()
+        } else {
+            showError = true
+            errorMessage = context.getString(R.string.error_empty_server_url)
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -104,8 +123,13 @@ fun ServerBottomSheet(
                 supportingText = {
                     if (showError) {
                         Text(
-                            text = stringResource(R.string.error_empty_server_url),
+                            text = errorMessage,
                             color = MaterialTheme.colorScheme.error
+                        )
+                    } else if (serverUrl.contains(" ")) {
+                        Text(
+                            text = stringResource(R.string.msg_spaces_will_be_removed),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
@@ -115,15 +139,7 @@ fun ServerBottomSheet(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        if (serverUrl.isNotBlank()) {
-                            onSave(serverUrl)
-                            onDismiss()
-                        } else {
-                            showError = true
-                        }
-                    }
+                    onDone = { validateAndSave() }
                 )
             )
 
@@ -145,15 +161,7 @@ fun ServerBottomSheet(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = {
-                        focusManager.clearFocus()
-                        if (serverUrl.isNotBlank()) {
-                            onSave(serverUrl)
-                            onDismiss()
-                        } else {
-                            showError = true
-                        }
-                    }
+                    onClick = { validateAndSave() }
                 ) {
                     Text(stringResource(R.string.action_save))
                 }
