@@ -1,33 +1,23 @@
 package app.echoirx.presentation.screens.search
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AudioFile
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.Error
-import androidx.compose.material.icons.outlined.Explicit
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,14 +37,12 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -75,12 +63,10 @@ import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.components.EmptyStateMessage
 import app.echoirx.presentation.components.TrackBottomSheet
 import app.echoirx.presentation.navigation.Route
+import app.echoirx.presentation.screens.search.components.FilterBottomSheet
 import app.echoirx.presentation.screens.search.components.SearchResultItem
 
-@OptIn(
-    ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class,
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     navController: NavController,
@@ -96,17 +82,7 @@ fun SearchScreen(
 
     var selectedTrack by remember { mutableStateOf<SearchResult?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var showFilterColumn by remember { mutableStateOf(false) }
-
-    // hide filter chips when we start scrolling search results
-    LaunchedEffect(lazyListState) {
-        snapshotFlow { lazyListState.firstVisibleItemScrollOffset }
-            .collect { scrollOffset ->
-                if (scrollOffset > 0) {
-                    showFilterColumn = false
-                }
-            }
-    }
+    var showFilterBottomSheet by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -218,124 +194,11 @@ fun SearchScreen(
                     state = rememberTooltipState()
                 ) {
                     IconButton(
-                        onClick = { showFilterColumn = !showFilterColumn }
+                        onClick = { showFilterBottomSheet = true }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.FilterAlt,
                             contentDescription = stringResource(R.string.cd_filter_button)
-                        )
-                    }
-                }
-            }
-        }
-
-        AnimatedVisibility(
-            visible = showFilterColumn,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 8.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.AudioFile,
-                        contentDescription = stringResource(R.string.cd_filter_quality),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.title_quality),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    SearchQuality.entries.forEach { quality ->
-                        var selected by remember {
-                            mutableStateOf(state.searchFilter.qualities.contains(quality))
-                        }
-                        FilterChip(
-                            selected = selected,
-                            onClick = {
-                                selected = !selected
-                                if (selected) {
-                                    viewModel.onSearchFilterQualityAdded(quality)
-                                } else {
-                                    viewModel.onSearchFilterQualityRemoved(quality)
-                                }
-                            },
-                            label = {
-                                Text(
-                                    text = stringResource(quality.label),
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                            },
-                            border = FilterChipDefaults.filterChipBorder(
-                                enabled = true,
-                                selected = selected,
-                                borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                            )
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Explicit,
-                        contentDescription = stringResource(R.string.cd_filter_content),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.title_content),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    SearchContentFilter.entries.forEach { contentFilter ->
-                        var selected by remember {
-                            mutableStateOf(
-                                state.searchFilter.contentFilters.contains(contentFilter)
-                            )
-                        }
-                        FilterChip(
-                            selected = selected,
-                            onClick = {
-                                selected = !selected
-                                if (selected) {
-                                    viewModel.onSearchContentFilterAdded(contentFilter)
-                                } else {
-                                    viewModel.onSearchContentFilterRemoved(contentFilter)
-                                }
-                            },
-                            label = {
-                                Text(
-                                    text = stringResource(contentFilter.label),
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                            },
-                            border = FilterChipDefaults.filterChipBorder(
-                                enabled = true,
-                                selected = selected,
-                                borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                            )
                         )
                     }
                 }
@@ -449,6 +312,25 @@ fun SearchScreen(
                 )
             },
             onDismiss = { showBottomSheet = false }
+        )
+    }
+
+    if (showFilterBottomSheet) {
+        FilterBottomSheet(
+            currentFilter = state.searchFilter,
+            onQualityFilterAdded = { quality ->
+                viewModel.onSearchFilterQualityAdded(quality)
+            },
+            onQualityFilterRemoved = { quality ->
+                viewModel.onSearchFilterQualityRemoved(quality)
+            },
+            onContentFilterAdded = { contentFilter ->
+                viewModel.onSearchContentFilterAdded(contentFilter)
+            },
+            onContentFilterRemoved = { contentFilter ->
+                viewModel.onSearchContentFilterRemoved(contentFilter)
+            },
+            onDismiss = { showFilterBottomSheet = false }
         )
     }
 }
