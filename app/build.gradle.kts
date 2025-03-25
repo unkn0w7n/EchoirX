@@ -124,7 +124,7 @@ android {
     applicationVariants.all {
         outputs.all {
             if (this is ApkVariantOutputImpl) {
-                val abiFilter = filters.find { it.filterType.equals(ABI.name) }
+                val abiFilter = filters.find(predicate = { it.filterType.equals(ABI.name) })
                 val abiName = abiFilter?.identifier ?: "universal"
                 val buildTime =
                     LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
