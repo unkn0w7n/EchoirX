@@ -63,11 +63,11 @@ import app.echoirx.data.utils.extensions.showSnackbar
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.components.EmptyStateMessage
 import app.echoirx.presentation.components.TrackBottomSheet
+import app.echoirx.presentation.navigation.NavConstants
 import app.echoirx.presentation.navigation.Route
 import app.echoirx.presentation.screens.search.components.FilterBottomSheet
 import app.echoirx.presentation.screens.search.components.SearchResultItem
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -82,23 +82,19 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val coroutineScope = rememberCoroutineScope()
-    val sameTapActionFlow = navController.currentBackStackEntry
-        ?.savedStateHandle
-        ?.getMutableStateFlow("triggerSameTap", false)
-        ?: remember { MutableStateFlow(false) }
 
     var selectedTrack by remember { mutableStateOf<SearchResult?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var showFilterBottomSheet by remember { mutableStateOf(false) }
 
-    LaunchedEffect(sameTapActionFlow) {
-        sameTapActionFlow.collectLatest {
-            if (it) {
-                focusRequester.requestFocus()
-                sameTapActionFlow.value = false
-                navController.currentBackStackEntry?.savedStateHandle
-                    ?.remove<Boolean>("triggerSameTap")
-            }
+    LaunchedEffect(Unit) {
+        navController.currentBackStackEntry?.savedStateHandle?.let { savedState ->
+            savedState.getStateFlow(NavConstants.KEY_FOCUS_SEARCH_BAR, false)
+                .filter { it }
+                .collect {
+                    focusRequester.requestFocus()
+                    savedState[NavConstants.KEY_FOCUS_SEARCH_BAR] = false
+                }
         }
     }
 

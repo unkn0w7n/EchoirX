@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import app.echoirx.presentation.navigation.NavConstants
 import app.echoirx.presentation.navigation.Route
 import app.echoirx.presentation.navigation.navigationItems
 
@@ -33,8 +34,9 @@ fun EchoirBottomNav(
                 selected = isSelected,
                 onClick = {
                     if (isSelected) {
-                        navController.currentBackStackEntry?.savedStateHandle
-                            ?.set("triggerSameTap", true)
+                        navController.currentBackStackEntry?.savedStateHandle?.apply {
+                            set(NavConstants.KEY_FOCUS_SEARCH_BAR, true)
+                        }
                     } else {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
