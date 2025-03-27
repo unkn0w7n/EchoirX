@@ -1,5 +1,7 @@
 package app.echoirx.presentation.screens.home
 
+import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,13 +14,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.echoirx.R
+import app.echoirx.data.utils.extensions.openAudioFile
+import app.echoirx.data.utils.extensions.showSnackbar
+import app.echoirx.domain.model.Download
+import app.echoirx.presentation.components.DownloadBottomSheet
 import app.echoirx.presentation.components.EmptyStateMessage
 import app.echoirx.presentation.screens.home.components.DownloadItem
 
@@ -28,6 +39,11 @@ fun HomeScreen(
     snackbarHostState: SnackbarHostState
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var selectedDownload by remember { mutableStateOf<Download?>(null) }
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     when {
         state.isLoading -> {
@@ -77,8 +93,8 @@ fun HomeScreen(
                         key = { it.downloadId }
                     ) { download ->
                         DownloadItem(
-                            download = download,
-                            snackbarHostState = snackbarHostState
+                            download = download
+                            // Don't make active downloads clickable
                         )
                     }
                 }
@@ -103,11 +119,64 @@ fun HomeScreen(
                     ) { download ->
                         DownloadItem(
                             download = download,
-                            snackbarHostState = snackbarHostState
+                            modifier = Modifier.clickable {
+                                selectedDownload = download
+                                showBottomSheet = true
+                            }
                         )
                     }
                 }
             }
         }
+    }
+
+    if (showBottomSheet && selectedDownload != null) {
+        DownloadBottomSheet(
+            download = selectedDownload!!,
+            onOpenFile = {
+                selectedDownload?.filePath?.openAudioFile(
+                    context,
+                    snackbarHostState,
+                    coroutineScope
+                )
+                showBottomSheet = false
+            },
+            onDeleteFile = {
+                val success = viewModel.deleteFile(selectedDownload!!)
+                if (success) {
+                    snackbarHostState.showSnackbar(
+                        scope = coroutineScope,
+                        message = context.getString(R.string.msg_file_deleted)
+                    )
+                }
+                showBottomSheet = false
+            },
+            onDeleteFromHistory = {
+                val success = viewModel.deleteDownload(selectedDownload!!)
+                if (success) {
+                    snackbarHostState.showSnackbar(
+                        scope = coroutineScope,
+                        message = context.getString(R.string.msg_removed_from_history)
+                    )
+                }
+                showBottomSheet = false
+            },
+            onShareFile = {
+                viewModel.shareFile(selectedDownload!!)?.let { shareIntent ->
+                    try {
+                        context.startActivity(Intent.createChooser(shareIntent, null))
+                    } catch (e: Exception) {
+                        snackbarHostState.showSnackbar(
+                            scope = coroutineScope,
+                            message = e.message ?: context.getString(R.string.msg_unknown_error)
+                        )
+                    }
+                }
+                showBottomSheet = false
+            },
+            onDismiss = {
+                showBottomSheet = false
+            }
+        )
     }
 }

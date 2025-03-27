@@ -56,6 +56,10 @@
     <string name="cd_track_image">Track artwork</string>
     <string name="cd_filter_quality">Quality filter options</string>
     <string name="cd_filter_content">Content filter options</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_delete">Delete</string>
+    <string name="cd_share">Share</string>
+    <string name="cd_history">History</string>
 
     <!-- Labels -->
     <string name="label_explicit">Explicit</string>
@@ -69,6 +73,8 @@
     <string name="label_queued">Queued</string>
     <string name="label_server_url">Server URL</string>
     <string name="label_processing">Processing</string>
+    <string name="label_completed">Completed</string>
+    <string name="label_failed">Failed</string>
 
     <!-- Titles -->
     <string name="title_active_downloads">Active downloads</string>
@@ -110,6 +116,8 @@
     <string name="msg_region_desc">Select your region for content availability</string>
     <string name="msg_server_recommendation">You\'re using the example server URL. Please configure a real server URL in the Settings tab to search for and download music.</string>
     <string name="msg_spaces_will_be_removed">Spaces will be automatically removed</string>
+    <string name="msg_file_deleted">File deleted</string>
+    <string name="msg_removed_from_history">Removed from download history</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -136,6 +144,10 @@
     <string name="action_save">Save</string>
     <string name="action_reset_to_default">Reset to Default</string>
     <string name="action_open_settings">Go to Settings</string>
+    <string name="action_open_in_player">Open</string>
+    <string name="action_delete_file">Delete file</string>
+    <string name="action_delete_from_history">Remove from history</string>
+    <string name="action_share">Share</string>
 
     <!-- Quality Labels -->
     <string name="quality_label_hires">Hi-Res Lossless</string>
