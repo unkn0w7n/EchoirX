@@ -60,6 +60,8 @@
     <string name="cd_delete">Delete</string>
     <string name="cd_share">Share</string>
     <string name="cd_history">History</string>
+    <string name="cd_play_preview">Play preview</string>
+    <string name="cd_stop_preview">Stop preview</string>
 
     <!-- Labels -->
     <string name="label_explicit">Explicit</string>
@@ -119,6 +121,7 @@
     <string name="msg_spaces_will_be_removed">Spaces will be automatically removed</string>
     <string name="msg_file_deleted">File deleted</string>
     <string name="msg_removed_from_history">Removed from download history</string>
+    <string name="msg_preview_error">Couldn\'t play the preview</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -149,6 +152,8 @@
     <string name="action_delete_file">Delete file</string>
     <string name="action_delete_from_history">Remove from history</string>
     <string name="action_share">Share</string>
+    <string name="action_play_preview">Play Preview</string>
+    <string name="action_stop_preview">Stop Preview</string>
 
     <!-- Quality Labels -->
     <string name="quality_label_hires">Hi-Res Lossless</string>

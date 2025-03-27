@@ -75,6 +75,15 @@ class ApiService @Inject constructor(
             }
         }
 
+    suspend fun getTrackPreview(trackId: Long): PlaybackResponseDto =
+        withContext(Dispatchers.IO) {
+            val baseUrl = getBaseUrl()
+
+            client.get("$baseUrl/track/preview") {
+                parameter("id", trackId)
+            }.body()
+        }
+
     suspend fun downloadFile(url: String): ByteArray =
         withContext(Dispatchers.IO) {
             client.get(url).body()

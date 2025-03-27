@@ -1,7 +1,9 @@
 package app.echoirx.data.repository
 
 import app.echoirx.data.remote.api.ApiService
+import app.echoirx.data.remote.mapper.PlaybackMapper.toDomain
 import app.echoirx.data.remote.mapper.SearchResultMapper.toDomain
+import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.SearchRepository
 import app.echoirx.presentation.screens.search.SearchFilter
@@ -33,4 +35,7 @@ class SearchRepositoryImpl @Inject constructor(
             formatMatch && explicitMatch
         }
     }
+
+    override suspend fun getTrackPreview(trackId: Long): PlaybackResponse =
+        apiService.getTrackPreview(trackId).toDomain()
 }

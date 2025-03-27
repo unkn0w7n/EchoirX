@@ -31,11 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.echoirx.R
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadStatus
 import java.io.File
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -141,9 +141,11 @@ fun DownloadBottomSheet(
                             color = when {
                                 download.status == DownloadStatus.COMPLETED && fileExists ->
                                     MaterialTheme.colorScheme.primary
+
                                 download.status == DownloadStatus.FAILED ||
                                         (download.status == DownloadStatus.COMPLETED && !fileExists) ->
                                     MaterialTheme.colorScheme.error
+
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant
                             }
                         )

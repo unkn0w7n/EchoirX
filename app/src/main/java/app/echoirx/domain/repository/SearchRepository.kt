@@ -1,5 +1,6 @@
 package app.echoirx.domain.repository
 
+import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.screens.search.SearchFilter
 import app.echoirx.presentation.screens.search.SearchType
@@ -11,4 +12,6 @@ interface SearchRepository {
         results: List<SearchResult>,
         filter: SearchFilter
     ): List<SearchResult>
+
+    suspend fun getTrackPreview(trackId: Long): PlaybackResponse
 }

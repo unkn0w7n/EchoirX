@@ -1,5 +1,6 @@
 package app.echoirx.domain.usecase
 
+import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.SearchRepository
 import javax.inject.Inject
@@ -9,4 +10,7 @@ class AlbumTracksUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(albumId: Long): List<SearchResult> =
         repository.getAlbumTracks(albumId)
+
+    suspend fun getTrackPreview(trackId: Long): PlaybackResponse =
+        repository.getTrackPreview(trackId)
 }

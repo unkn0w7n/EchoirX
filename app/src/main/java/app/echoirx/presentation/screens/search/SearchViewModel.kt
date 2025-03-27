@@ -1,9 +1,11 @@
 package app.echoirx.presentation.screens.search
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.R
+import app.echoirx.data.media.AudioPreviewPlayer
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.QualityConfig
 import app.echoirx.domain.model.SearchResult
@@ -24,10 +26,13 @@ class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
     private val processDownloadUseCase: ProcessDownloadUseCase,
     private val settingsUseCase: SettingsUseCase,
+    private val audioPreviewPlayer: AudioPreviewPlayer,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state.asStateFlow()
+
+    val isPreviewPlaying = audioPreviewPlayer.isPlaying
 
     fun onQueryChange(query: String) {
         _state.update {
@@ -178,5 +183,27 @@ class SearchViewModel @Inject constructor(
                 showServerRecommendation = false
             )
         }
+    }
+
+    fun playTrackPreview(trackId: Long) {
+        viewModelScope.launch {
+            try {
+                val preview = searchUseCase.getTrackPreview(trackId)
+                if (preview.urls.isNotEmpty()) {
+                    audioPreviewPlayer.play(preview.urls[0])
+                }
+            } catch (e: Exception) {
+                Log.e("SearchViewModel", "Error playing preview", e)
+            }
+        }
+    }
+
+    fun stopTrackPreview() {
+        audioPreviewPlayer.stop()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPreviewPlayer.stop()
     }
 }

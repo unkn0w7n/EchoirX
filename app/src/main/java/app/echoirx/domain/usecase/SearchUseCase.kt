@@ -1,5 +1,6 @@
 package app.echoirx.domain.usecase
 
+import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.SearchRepository
 import app.echoirx.presentation.screens.search.SearchFilter
@@ -19,4 +20,7 @@ class SearchUseCase @Inject constructor(
         results: List<SearchResult>,
         filter: SearchFilter
     ): List<SearchResult> = repository.filterSearchResults(results, filter)
+
+    suspend fun getTrackPreview(trackId: Long): PlaybackResponse =
+        repository.getTrackPreview(trackId)
 }

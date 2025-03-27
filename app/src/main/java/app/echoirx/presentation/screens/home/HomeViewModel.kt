@@ -3,6 +3,7 @@ package app.echoirx.presentation.screens.home
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.domain.model.Download
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(

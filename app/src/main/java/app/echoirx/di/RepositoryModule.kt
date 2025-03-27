@@ -2,6 +2,7 @@ package app.echoirx.di
 
 import android.content.Context
 import app.echoirx.data.local.dao.DownloadDao
+import app.echoirx.data.media.AudioPreviewPlayer
 import app.echoirx.data.media.FFmpegProcessor
 import app.echoirx.data.media.MetadataManager
 import app.echoirx.data.notification.DownloadNotificationManager
@@ -75,4 +76,10 @@ object RepositoryModule {
     fun provideSettingsRepository(
         @ApplicationContext context: Context
     ): SettingsRepository = SettingsRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideAudioPreviewPlayer(
+        @ApplicationContext context: Context
+    ): AudioPreviewPlayer = AudioPreviewPlayer(context)
 }

@@ -1,7 +1,9 @@
 package app.echoirx.presentation.screens.details
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.echoirx.data.media.AudioPreviewPlayer
 import app.echoirx.domain.model.AlbumDownloadContext
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.QualityConfig
@@ -21,10 +23,13 @@ import javax.inject.Inject
 class DetailsViewModel @Inject constructor(
     private val getAlbumTracksUseCase: AlbumTracksUseCase,
     private val processDownloadUseCase: ProcessDownloadUseCase,
-    private val downloadRepository: DownloadRepository
+    private val downloadRepository: DownloadRepository,
+    private val audioPreviewPlayer: AudioPreviewPlayer
 ) : ViewModel() {
     private val _state = MutableStateFlow(DetailsState())
     val state: StateFlow<DetailsState> = _state.asStateFlow()
+
+    val isPreviewPlaying = audioPreviewPlayer.isPlaying
 
     fun initializeWithItem(item: SearchResult) {
         _state.update { it.copy(item = item) }
@@ -88,5 +93,27 @@ class DetailsViewModel @Inject constructor(
                 _state.update { it.copy(error = e.message, isLoading = false) }
             }
         }
+    }
+
+    fun playTrackPreview(trackId: Long) {
+        viewModelScope.launch {
+            try {
+                val preview = getAlbumTracksUseCase.getTrackPreview(trackId)
+                if (preview.urls.isNotEmpty()) {
+                    audioPreviewPlayer.play(preview.urls[0])
+                }
+            } catch (e: Exception) {
+                Log.e("DetailsViewModel", "Error playing preview", e)
+            }
+        }
+    }
+
+    fun stopTrackPreview() {
+        audioPreviewPlayer.stop()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPreviewPlayer.stop()
     }
 }

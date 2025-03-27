@@ -2,6 +2,7 @@ package app.echoirx.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,11 +24,14 @@ import app.echoirx.R
 import app.echoirx.domain.model.QualityConfig
 import app.echoirx.domain.model.SearchResult
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TrackBottomSheet(
     track: SearchResult,
     onDownload: (QualityConfig) -> Unit,
+    onPreviewClick: () -> Unit = {},
+    isPreviewPlaying: Boolean = false,
+    showPreviewButton: Boolean = false,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,14 +100,25 @@ fun TrackBottomSheet(
                 )
             }
 
-            DownloadOptions(
-                formats = track.formats,
-                modes = track.modes,
-                onOptionSelected = { config ->
-                    onDownload(config)
-                    onDismiss()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                if (showPreviewButton) {
+                    PreviewButton(
+                        onPreviewClick = onPreviewClick,
+                        isPlaying = isPreviewPlaying,
+                    )
                 }
-            )
+
+                DownloadOptions(
+                    formats = track.formats,
+                    modes = track.modes,
+                    onOptionSelected = { config ->
+                        onDownload(config)
+                        onDismiss()
+                    }
+                )
+            }
         }
     }
 }
