@@ -23,8 +23,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import app.echoirx.R
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadStatus
+import java.io.File
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -45,7 +49,31 @@ fun DownloadBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState()
-    val isCompleted = download.status == DownloadStatus.COMPLETED
+    val context = LocalContext.current
+
+    val fileExists = remember(download.filePath) {
+        if (download.filePath.isNullOrEmpty()) {
+            false
+        } else {
+            try {
+                if (download.filePath.startsWith("content://")) {
+                    val uri = download.filePath.toUri()
+                    val fileSize = context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                        it.statSize
+                    } ?: 0L
+                    fileSize > 0
+                } else {
+                    val file = File(download.filePath)
+                    file.exists() && file.length() > 0
+                }
+            } catch (_: Exception) {
+                false
+            }
+        }
+    }
+
+    val isCompleted = download.status == DownloadStatus.COMPLETED && fileExists
+    val shouldShowFileOptions = isCompleted && fileExists
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -97,16 +125,25 @@ fun DownloadBottomSheet(
                             )
                         }
 
+                        var statusText = when (download.status) {
+                            DownloadStatus.COMPLETED -> stringResource(R.string.label_completed)
+                            DownloadStatus.FAILED -> stringResource(R.string.label_failed)
+                            else -> download.status.name
+                        }
+
+                        if (download.status == DownloadStatus.COMPLETED && !fileExists) {
+                            statusText = stringResource(R.string.label_file_missing)
+                        }
+
                         Text(
-                            text = when (download.status) {
-                                DownloadStatus.COMPLETED -> stringResource(R.string.label_completed)
-                                DownloadStatus.FAILED -> stringResource(R.string.label_failed)
-                                else -> download.status.name
-                            },
+                            text = statusText,
                             style = MaterialTheme.typography.bodySmall,
-                            color = when (download.status) {
-                                DownloadStatus.COMPLETED -> MaterialTheme.colorScheme.primary
-                                DownloadStatus.FAILED -> MaterialTheme.colorScheme.error
+                            color = when {
+                                download.status == DownloadStatus.COMPLETED && fileExists ->
+                                    MaterialTheme.colorScheme.primary
+                                download.status == DownloadStatus.FAILED ||
+                                        (download.status == DownloadStatus.COMPLETED && !fileExists) ->
+                                    MaterialTheme.colorScheme.error
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant
                             }
                         )
@@ -124,7 +161,7 @@ fun DownloadBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (isCompleted) {
+                if (shouldShowFileOptions) {
                     FilterChip(
                         selected = false,
                         onClick = onOpenFile,

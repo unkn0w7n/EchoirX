@@ -75,6 +75,7 @@
     <string name="label_processing">Processing</string>
     <string name="label_completed">Completed</string>
     <string name="label_failed">Failed</string>
+    <string name="label_file_missing">File missing</string>
 
     <!-- Titles -->
     <string name="title_active_downloads">Active downloads</string>
