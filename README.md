@@ -2,174 +2,83 @@
 
 # Echoir
 
-A Material You music downloader for Android
+> A sophisticated Material You music downloader for Android
 
 ![Android](https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android2.svg)
 ![Kotlin](https://ziadoua.github.io/m3-Markdown-Badges/badges/Kotlin/kotlin2.svg)
-![stars](https://m3-markdown-badges.vercel.app/stars/9/2/imjyotiraditya/echoir)
+![stars](https://m3-markdown-badges.vercel.app/stars/10/3/imjyotiraditya/echoirx)
 
-## About
+## Overview
 
-Echoir (from Echo + Choir) is a music downloader that aims to provide high-quality audio formats while adhering to Material Design principles. The name also plays on the phrase "which will fall soon", reflecting the ephemeral nature of software projects.
+Echoir (from Echo + Choir) is a premium music downloader delivering high-quality audio formats while adhering to Material Design principles. The name cleverly plays on the phrase "which will fall soon," reflecting the ephemeral nature of software projects.
 
-## Credits
+## Key Features
 
-- **Design Assets:**
-  - App launcher icon and banner design by [Xelxen](https://github.com/Xelxen)
+### Audio Quality Options
+- **Hi-Res Lossless** — Up to 24-bit/192kHz FLAC
+- **CD Quality Lossless** — 16-bit/44.1kHz FLAC
+- **Dolby Atmos** — Enhanced AC-3/AC-4
+- **High Quality AAC** — 320kbps
+- **Standard Quality** — 96kbps AAC
 
-- **Core Dependencies:**
-  - [ffmpeg-kit](https://github.com/arthenica/ffmpeg-kit) by Arthenica
+### Design & User Experience
+- **Material You Theming** — Dynamic colors following system preferences
+- **Material Design 3** — Modern components and animations
+- **Intuitive Interface** — Simple workflow for downloading music
 
-## Features
+### Core Functionality
+- **Background Processing** — Downloads continue with progress notifications
+- **Comprehensive Metadata** — Extensive tag support for all major fields
+- **Queue Management** — Organize and prioritize downloads
+- **Customization Options**:
+  - Configurable download locations
+  - Flexible file naming formats
+  - Smart filtering system
 
-- Multiple quality options:
-  - Hi-Res Lossless (up to 24-bit/192kHz FLAC)
-  - Lossless CD Quality (16-bit/44.1kHz FLAC)
-  - Dolby Atmos (Enhanced AC-3/AC-4)
-  - High Quality AAC (320kbps)
-  - Standard Quality AAC (96kbps)
-
-- Material You theming
-  - Dynamic colors
-  - Material Design 3 components
-
-- Core functionality
-  - Background downloads with progress notifications
-  - Comprehensive metadata embedding
-  - Download queue management
-  - Customizable download location
-  - Configurable file naming format
-  - **Filters for quality and content:**
-    - **Quality filters:** Hi-Res, Lossless, Dolby Atmos
-    - **Content filters:** Explicit, Clean
-  - Content filtering options (Explicit/Clean)
-  - Album/track download support
-  - Clear cache and reset settings options
-
-## Available Regions
-
-<details>
-<summary>Supported Countries</summary>
-
-- 🇦🇱 Albania (AL)
-- 🇦🇷 Argentina (AR)
-- 🇦🇺 Australia (AU)
-- 🇦🇹 Austria (AT)
-- 🇧🇪 Belgium (BE)
-- 🇧🇷 Brazil (BR)
-- 🇨🇦 Canada (CA)
-- 🇨🇱 Chile (CL)
-- 🇨🇴 Colombia (CO)
-- 🇩🇴 Dominican Republic (DO)
-- 🇫🇷 France (FR)
-- 🇩🇪 Germany (DE)
-- 🇭🇰 Hong Kong (HK)
-- 🇮🇱 Israel (IL)
-- 🇮🇹 Italy (IT)
-- 🇯🇲 Jamaica (JM)
-- 🇲🇾 Malaysia (MY)
-- 🇲🇽 Mexico (MX)
-- 🇳🇿 New Zealand (NZ)
-- 🇳🇬 Nigeria (NG)
-- 🇵🇪 Peru (PE)
-- 🇵🇷 Puerto Rico (PR)
-- 🇸🇬 Singapore (SG)
-- 🇿🇦 South Africa (ZA)
-- 🇪🇸 Spain (ES)
-- 🇹🇭 Thailand (TH)
-- 🇺🇬 Uganda (UG)
-- 🇦🇪 United Arab Emirates (AE)
-- 🇬🇧 United Kingdom (GB)
-- 🇺🇸 United States (US)
-
-</details>
+### Smart Filtering
+- **Quality Filters:** Hi-Res, Lossless, Dolby Atmos
+- **Content Filters:** Explicit, Clean
 
 ## Embedded Metadata
 
-<details>
-<summary>Track Metadata</summary>
+Echoir embeds rich metadata in every download:
 
-- **Basic Track Info**
-  - Title
-  - Track Number
-  - Total Tracks
-  - Disc Number
-  - Total Discs
+| Category | Details |
+|----------|---------|
+| **Track Info** | Title, Track Number, Total Tracks, Disc Number, Total Discs |
+| **Album Info** | Album Title, Release Date, Year, Copyright, Record Label, UPC/Barcode |
+| **Artist Info** | Artist(s), Album Artist, Composer, Lyricist, Producer, Mixer, Engineer, Mastering Engineer |
+| **Additional** | Genre, Explicit Flag, ISRC, Cover Art (1280×1280), Synced Lyrics (when available), Source URL |
 
-- **Album Info**
-  - Album Title
-  - Release Date
-  - Year
-  - Copyright
-  - Record Label
-  - UPC/Barcode
+## Technical Foundation
 
-- **Artist Info**
-  - Artist(s)
-  - Album Artist
-  - Composer
-  - Lyricist
-  - Producer
-  - Mixer
-  - Engineer
-  - Mastering Engineer
-  - Additional Performers
-  - Additional Producers
+Echoir represents a complete reimagining of its predecessor (FluidAC) with significant improvements:
 
-- **Additional Metadata**
-  - Genre
-  - Explicit Flag
-  - ISRC
-  - Cover Art (1280x1280)
-  - Lyrics (Synced if available)
-  - Original URL
+- **Optimized Codebase** — Dramatically reduced APK size
+- **Enhanced Functionality** — Background downloads and comprehensive metadata
+- **Open Source** — Fully transparent development
+- **Minimal Dependencies** — Custom-built minimal version of ffmpeg-kit
 
-</details>
+### Why FFmpeg?
 
-## Additional Information
+Echoir utilizes a custom-built version of ffmpeg-kit specifically for Hi-Res Lossless content processing:
 
-<details>
-<summary>Project History & Technical Details</summary>
+- **Handles MPEG-DASH Segments** — Hi-Res content is delivered as segmented files
+- **Stream Copy Only** — Uses `-c copy` flag for lossless concatenation without re-encoding
+- **Format-Specific Processing** — Only used for Hi-Res content; other formats download directly
 
-### History
-Echoir is the successor to FluidAC, reimagined with major improvements:
-- Comprehensive metadata support
-- Background download capabilities
-- Full open-source availability
-- Significantly reduced APK size
+## Companion Projects
 
-### Technical Notes
-- Echoir uses a custom-built minimal version of [ffmpeg-kit](https://github.com/imjyotiraditya/ffmpeg-kit), significantly reduced from the [original by Arthenica](https://github.com/arthenica/ffmpeg-kit). Our build only includes FLAC support, drastically reducing the library size.
+### Enhance Your Experience
 
-- **Why FFmpeg?**
-  While Echoir is strictly a downloader (no transcoding), FFmpeg is essential for Hi-Res Lossless content. Here's why:
-  - Hi-Res content is delivered via MPEG-DASH with segmented URLs
-  - The process:
-    1. Download all segments individually
-    2. Use simple FFmpeg command: `-i input -c copy output`
-    3. The `-c copy` flag ensures:
-       - Direct stream copy without re-encoding
-       - Pure concatenation of segments
-       - No quality loss or modification
-  - The code is open-source and can be audited to verify this simple operation
+- **Missing Lyrics?** Try [SongSync](https://github.com/Lambada10/SongSync/releases/latest) for managing and syncing lyrics
 
-Note: For other formats like Lossless CD Quality, Dolby Atmos, and AAC, direct downloads are used without any FFmpeg processing.
-</details>
+### Recommended Music Players
 
-## Related Projects & Recommendations
+- **Material Design Lovers:** [Gramophone](https://github.com/AkaneTan/Gramophone) — Modern offline player with MD3
+- **Apple Music Style:** [AccordLegacy](https://github.com/FoedusProgramme/AccordLegacy) — Available via [Light Summer](https://t.me/light_summer)
 
-### Missing or Unsatisfactory Lyrics?
+## Credits
 
-If you're not satisfied with the embedded lyrics or they're missing, try our friend project:
-- [SongSync](https://github.com/Lambada10/SongSync/releases/latest) - A tool for managing and syncing lyrics
-
-### Music Players
-
-Looking for a great music player? Here are some recommendations:
-
-- **Material Design 3 Experience:**
-  - [Gramophone](https://github.com/AkaneTan/Gramophone) - A modern offline music player following Material Design 3 principles
-
-- **Apple Music Design:**
-  - [AccordLegacy](https://github.com/FoedusProgramme/AccordLegacy) - A music player with Apple Music-inspired design
-  - Available through the [Light Summer](https://t.me/light_summer) channel
+- **Design:** App launcher icon and banner by [Xelxen](https://github.com/Xelxen)
+- **Core Technology:** [ffmpeg-kit](https://github.com/arthenica/ffmpeg-kit) by Arthenica (custom minimal build)
