@@ -35,20 +35,20 @@ fun DownloadOptions(
 ) {
     val downloadOptions = buildList {
         if (!formats.isNullOrEmpty() && !modes.isNullOrEmpty()) {
-            val hasDolbyAtmos = modes.contains("DOLBY_ATMOS") && formats.contains("DOLBY_ATMOS")
-            val hasStereo = modes.contains("STEREO")
+            val hasDolbyAtmos = "DOLBY_ATMOS" in modes && "DOLBY_ATMOS" in formats
+            val hasStereo = "STEREO" in modes
 
             if (hasDolbyAtmos) {
                 add(QualityConfig.DolbyAtmosAC3)
                 add(QualityConfig.DolbyAtmosAC4)
             }
 
-            if (hasStereo && formats.contains("HIRES_LOSSLESS")) {
+            if (hasStereo && "HIRES_LOSSLESS" in formats) {
                 add(QualityConfig.HiRes)
             }
 
             if (hasStereo && !hasDolbyAtmos) {
-                if (formats.contains("LOSSLESS")) {
+                if ("LOSSLESS" in formats) {
                     add(QualityConfig.Lossless)
                 }
                 add(QualityConfig.AAC320)

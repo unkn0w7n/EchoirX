@@ -104,7 +104,7 @@ fun DetailsScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (result.formats?.contains("DOLBY_ATMOS") == true) {
+                        if (result.formats?.let { "DOLBY_ATMOS" in it } == true) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_dolby),
                                 contentDescription = stringResource(R.string.cd_dolby_atmos),
@@ -197,7 +197,7 @@ fun DetailsScreen(
                                         text = String.format(
                                             java.util.Locale(Locale.current.language),
                                             "%02d",
-                                            state.tracks.indexOf(track) + 1
+                                            state.tracks.indexOfFirst { it.id == track.id } + 1
                                         ),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant

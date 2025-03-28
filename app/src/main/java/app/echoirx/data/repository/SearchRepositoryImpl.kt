@@ -26,8 +26,8 @@ class SearchRepositoryImpl @Inject constructor(
         filter: SearchFilter
     ): List<SearchResult> {
         return results.filter { result ->
-            val formatMatch = filter.qualities.isEmpty() || filter.qualities.any {
-                result.formats?.contains(it.format) ?: false
+            val formatMatch = filter.qualities.isEmpty() || filter.qualities.any { quality ->
+                result.formats?.let { formats -> quality.format in formats } ?: false
             }
             val explicitMatch = filter.contentFilters.isEmpty() || filter.contentFilters.any {
                 it.explicit == result.explicit

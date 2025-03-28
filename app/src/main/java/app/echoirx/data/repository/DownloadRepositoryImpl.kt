@@ -221,7 +221,7 @@ class DownloadRepositoryImpl @Inject constructor(
                     completedIndices.add(index)
                     onProgress((completedIndices.size * 100) / urls.size)
                     true
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     false
                 }
             }

@@ -90,7 +90,7 @@ fun SearchResultItem(
                     )
                 }
                 result.formats?.let { formats ->
-                    if (formats.contains("DOLBY_ATMOS")) {
+                    if ("DOLBY_ATMOS" in formats) {
                         Icon(
                             painter = painterResource(R.drawable.ic_dolby),
                             contentDescription = stringResource(R.string.label_dolby_atmos),
