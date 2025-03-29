@@ -1,11 +1,8 @@
 package app.echoirx.data.media
 
-import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.core.net.toUri
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,9 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AudioPreviewPlayer @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+class AudioPreviewPlayer @Inject constructor() {
     private var mediaPlayer: MediaPlayer? = null
     private var currentlyPlayingUrl: String? = null
 
@@ -39,7 +34,7 @@ class AudioPreviewPlayer @Inject constructor(
                         .setUsage(AudioAttributes.USAGE_MEDIA)
                         .build()
                 )
-                setDataSource(context, url.toUri())
+                setDataSource(url)
                 setOnPreparedListener { mp ->
                     mp.start()
                     _isPlaying.value = true

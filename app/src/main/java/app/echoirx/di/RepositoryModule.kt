@@ -79,7 +79,5 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideAudioPreviewPlayer(
-        @ApplicationContext context: Context
-    ): AudioPreviewPlayer = AudioPreviewPlayer(context)
+    fun provideAudioPreviewPlayer(): AudioPreviewPlayer = AudioPreviewPlayer()
 }
