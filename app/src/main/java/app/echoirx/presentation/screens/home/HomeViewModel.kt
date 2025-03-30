@@ -7,8 +7,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.domain.model.Download
+import app.echoirx.domain.model.DownloadRequest
+import app.echoirx.domain.model.QualityConfig
+import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.DownloadRepository
 import app.echoirx.domain.usecase.GetDownloadsUseCase
+import app.echoirx.domain.usecase.ProcessDownloadUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +29,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getDownloadsUseCase: GetDownloadsUseCase,
     private val downloadRepository: DownloadRepository,
+    private val processDownloadUseCase: ProcessDownloadUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
@@ -78,6 +83,42 @@ class HomeViewModel @Inject constructor(
                 if (file.exists()) {
                     file.delete()
                 }
+            }
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun retryDownload(download: Download): Boolean {
+        return try {
+            viewModelScope.launch {
+                downloadRepository.deleteDownload(download)
+
+                val qualityConfig = when (download.quality) {
+                    "HI_RES_LOSSLESS" -> QualityConfig.HiRes
+                    "LOSSLESS" -> QualityConfig.Lossless
+                    "DOLBY_ATMOS" -> if (download.isAc4) QualityConfig.DolbyAtmosAC4 else QualityConfig.DolbyAtmosAC3
+                    "HIGH" -> QualityConfig.AAC320
+                    "LOW" -> QualityConfig.AAC96
+                    else -> QualityConfig.AAC320
+                }
+
+                processDownloadUseCase(
+                    DownloadRequest.Track(
+                        track = SearchResult(
+                            id = download.trackId,
+                            title = download.title,
+                            duration = download.duration,
+                            explicit = download.explicit,
+                            cover = download.cover,
+                            artists = listOf(download.artist),
+                            modes = null,
+                            formats = null
+                        ),
+                        config = qualityConfig
+                    )
+                )
             }
             true
         } catch (_: Exception) {

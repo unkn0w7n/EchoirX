@@ -62,6 +62,7 @@
     <string name="cd_history">History</string>
     <string name="cd_play_preview">Play preview</string>
     <string name="cd_stop_preview">Stop preview</string>
+    <string name="cd_retry">Retry</string>
 
     <!-- Labels -->
     <string name="label_explicit">Explicit</string>
@@ -126,6 +127,8 @@
     <string name="msg_removed_from_history">Removed from download history</string>
     <string name="msg_preview_error">Couldn\'t play the preview</string>
     <string name="msg_reset_reminder">Cloudflare Worker limits reset at midnight UTC</string>
+    <string name="msg_download_restarted">Download restarted</string>
+    <string name="msg_download_retry_failed">Failed to restart download</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -158,6 +161,7 @@
     <string name="action_share">Share</string>
     <string name="action_play_preview">Play Preview</string>
     <string name="action_stop_preview">Stop Preview</string>
+    <string name="action_retry_download">Retry Download</string>
 
     <!-- Quality Labels -->
     <string name="quality_label_hires">Hi-Res Lossless</string>

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -35,6 +36,7 @@ import androidx.core.net.toUri
 import app.echoirx.R
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadStatus
+import app.echoirx.presentation.components.models.ChipAction
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -45,6 +47,7 @@ fun DownloadBottomSheet(
     onDeleteFile: () -> Unit,
     onDeleteFromHistory: () -> Unit,
     onShareFile: () -> Unit,
+    onRetryDownload: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -73,6 +76,7 @@ fun DownloadBottomSheet(
     }
 
     val isCompleted = download.status == DownloadStatus.COMPLETED && fileExists
+    val isFailed = download.status == DownloadStatus.FAILED
     val shouldShowFileOptions = isCompleted && fileExists
 
     ModalBottomSheet(
@@ -163,78 +167,71 @@ fun DownloadBottomSheet(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (shouldShowFileOptions) {
-                    FilterChip(
-                        selected = false,
-                        onClick = onOpenFile,
-                        label = {
-                            Text(
-                                text = stringResource(R.string.action_open_in_player),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.PlayArrow,
+                val actions = buildList {
+                    if (shouldShowFileOptions) {
+                        add(
+                            ChipAction(
+                                label = stringResource(R.string.action_open_in_player),
+                                icon = Icons.Outlined.PlayArrow,
                                 contentDescription = stringResource(R.string.cd_play),
-                                modifier = Modifier.size(18.dp)
+                                onClick = onOpenFile
                             )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            labelColor = MaterialTheme.colorScheme.onSurface,
-                            iconColor = MaterialTheme.colorScheme.onSurface,
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                            enabled = true,
-                            selected = false
-                        ),
-                        modifier = Modifier.height(32.dp)
-                    )
+                        )
 
-                    FilterChip(
-                        selected = false,
-                        onClick = onDeleteFile,
-                        label = {
-                            Text(
-                                text = stringResource(R.string.action_delete_file),
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
+                        add(
+                            ChipAction(
+                                label = stringResource(R.string.action_delete_file),
+                                icon = Icons.Outlined.Delete,
                                 contentDescription = stringResource(R.string.cd_delete),
-                                modifier = Modifier.size(18.dp)
+                                onClick = onDeleteFile
                             )
-                        },
-                        colors = FilterChipDefaults.filterChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            labelColor = MaterialTheme.colorScheme.error,
-                            iconColor = MaterialTheme.colorScheme.error,
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            borderColor = MaterialTheme.colorScheme.error.copy(alpha = 0.2f),
-                            enabled = true,
-                            selected = false
-                        ),
-                        modifier = Modifier.height(32.dp)
-                    )
+                        )
 
+                        add(
+                            ChipAction(
+                                label = stringResource(R.string.action_share),
+                                icon = Icons.Outlined.Share,
+                                contentDescription = stringResource(R.string.cd_share),
+                                onClick = onShareFile
+                            )
+                        )
+                    }
+
+                    if (isFailed) {
+                        add(
+                            ChipAction(
+                                label = stringResource(R.string.action_retry_download),
+                                icon = Icons.Outlined.Refresh,
+                                contentDescription = stringResource(R.string.cd_retry),
+                                onClick = onRetryDownload
+                            )
+                        )
+                    }
+
+                    add(
+                        ChipAction(
+                            label = stringResource(R.string.action_delete_from_history),
+                            icon = Icons.Outlined.History,
+                            contentDescription = stringResource(R.string.cd_history),
+                            onClick = onDeleteFromHistory
+                        )
+                    )
+                }
+
+                actions.forEach { action ->
                     FilterChip(
                         selected = false,
-                        onClick = onShareFile,
+                        onClick = action.onClick,
                         label = {
                             Text(
-                                text = stringResource(R.string.action_share),
+                                text = action.label,
                                 style = MaterialTheme.typography.labelLarge
                             )
                         },
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Outlined.Share,
-                                contentDescription = stringResource(R.string.cd_share),
+                                imageVector = action.icon,
+                                contentDescription = action.contentDescription,
                                 modifier = Modifier.size(18.dp)
                             )
                         },
@@ -251,35 +248,6 @@ fun DownloadBottomSheet(
                         modifier = Modifier.height(32.dp)
                     )
                 }
-
-                FilterChip(
-                    selected = false,
-                    onClick = onDeleteFromHistory,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.action_delete_from_history),
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.History,
-                            contentDescription = stringResource(R.string.cd_history),
-                            modifier = Modifier.size(18.dp)
-                        )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        labelColor = MaterialTheme.colorScheme.onSurface,
-                        iconColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    border = FilterChipDefaults.filterChipBorder(
-                        borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
-                        enabled = true,
-                        selected = false
-                    ),
-                    modifier = Modifier.height(32.dp)
-                )
             }
         }
     }

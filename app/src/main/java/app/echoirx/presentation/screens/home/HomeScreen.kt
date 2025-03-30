@@ -174,6 +174,21 @@ fun HomeScreen(
                 }
                 showBottomSheet = false
             },
+            onRetryDownload = {
+                val success = viewModel.retryDownload(selectedDownload!!)
+                if (success) {
+                    snackbarHostState.showSnackbar(
+                        scope = coroutineScope,
+                        message = context.getString(R.string.msg_download_restarted)
+                    )
+                } else {
+                    snackbarHostState.showSnackbar(
+                        scope = coroutineScope,
+                        message = context.getString(R.string.msg_download_retry_failed)
+                    )
+                }
+                showBottomSheet = false
+            },
             onDismiss = {
                 showBottomSheet = false
             }
