@@ -66,7 +66,9 @@ import app.echoirx.presentation.components.TrackBottomSheet
 import app.echoirx.presentation.navigation.NavConstants
 import app.echoirx.presentation.navigation.Route
 import app.echoirx.presentation.screens.search.components.FilterBottomSheet
+import app.echoirx.presentation.screens.search.components.SearchHistorySection
 import app.echoirx.presentation.screens.search.components.SearchResultItem
+import app.echoirx.presentation.screens.search.components.SearchSuggestionsSection
 import kotlinx.coroutines.flow.filter
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
@@ -224,89 +226,129 @@ fun SearchScreen(
             modifier = Modifier.padding(horizontal = 8.dp),
         )
 
-        when (state.status) {
-            SearchStatus.Empty, SearchStatus.Ready -> {
-                EmptyStateMessage(
-                    title = stringResource(R.string.msg_search_empty),
-                    description = stringResource(R.string.msg_search_empty_desc),
-                    painter = painterResource(R.drawable.ic_search)
-                )
-            }
-
-            SearchStatus.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    ContainedLoadingIndicator()
+        if (state.query.isNotEmpty() && state.status == SearchStatus.Ready && state.suggestedQueries.isNotEmpty()) {
+            SearchSuggestionsSection(
+                suggestions = state.suggestedQueries,
+                onSuggestionClick = { item ->
+                    viewModel.useHistoryItem(item)
+                    focusManager.clearFocus()
                 }
-            }
-
-            SearchStatus.Success -> {
-                if (state.filteredResults.isNotEmpty()) {
-                    LazyColumn(
-                        state = lazyListState
-                    ) {
-                        items(state.filteredResults) { result ->
-                            SearchResultItem(
-                                result = result,
-                                onClick = {
-                                    if (state.searchType == SearchType.TRACKS) {
-                                        selectedTrack = result
-                                        showBottomSheet = true
-                                    } else {
-                                        navController.currentBackStackEntry
-                                            ?.savedStateHandle
-                                            ?.set("result", result)
-                                        navController.navigate(
-                                            Route.Search.Details().createPath(
-                                                type = state.searchType.name,
-                                                id = result.id
-                                            )
-                                        )
-                                    }
-                                }
-                            )
+            )
+        } else {
+            when (state.status) {
+                SearchStatus.Empty -> {
+                    SearchHistorySection(
+                        searchHistory = state.searchHistory,
+                        onHistoryItemClick = { item ->
+                            viewModel.useHistoryItem(item)
+                        },
+                        onDeleteHistoryItem = { item ->
+                            viewModel.deleteHistoryItem(item)
+                        },
+                        onClearHistory = {
+                            viewModel.clearSearchHistory()
                         }
-                    }
-                } else {
-                    EmptyStateMessage(
-                        title = stringResource(R.string.msg_search_no_results_filters),
-                        description = stringResource(R.string.msg_search_no_results_filters_desc),
-                        painter = painterResource(R.drawable.ic_search)
                     )
                 }
-            }
 
-            SearchStatus.NoResults -> {
-                EmptyStateMessage(
-                    title = stringResource(R.string.msg_search_no_results),
-                    description = stringResource(R.string.msg_search_no_results_desc),
-                    painter = painterResource(R.drawable.ic_search)
-                )
-            }
-
-            SearchStatus.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (state.showServerRecommendation) {
-                        EmptyStateMessage(
-                            title = stringResource(R.string.title_server_recommendation),
-                            description = stringResource(R.string.msg_server_recommendation),
-                            icon = Icons.Outlined.CloudOff
+                SearchStatus.Ready -> {
+                    if (state.isShowingHistory) {
+                        SearchHistorySection(
+                            searchHistory = state.searchHistory,
+                            onHistoryItemClick = { item ->
+                                viewModel.useHistoryItem(item)
+                            },
+                            onDeleteHistoryItem = { item ->
+                                viewModel.deleteHistoryItem(item)
+                            },
+                            onClearHistory = {
+                                viewModel.clearSearchHistory()
+                            }
                         )
                     } else {
                         EmptyStateMessage(
-                            title = stringResource(R.string.msg_unknown_error),
-                            description = state.error.formatErrorMessage(
-                                defaultError = stringResource(R.string.msg_unknown_error)
-                            ),
-                            icon = Icons.Outlined.Error,
-                            buttonText = stringResource(R.string.action_retry),
-                            onButtonClick = { viewModel.search() }
+                            title = stringResource(R.string.msg_search_empty),
+                            description = stringResource(R.string.msg_search_empty_desc),
+                            painter = painterResource(R.drawable.ic_search)
                         )
+                    }
+                }
+
+                SearchStatus.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ContainedLoadingIndicator()
+                    }
+                }
+
+                SearchStatus.Success -> {
+                    if (state.filteredResults.isNotEmpty()) {
+                        LazyColumn(
+                            state = lazyListState
+                        ) {
+                            items(state.filteredResults) { result ->
+                                SearchResultItem(
+                                    result = result,
+                                    onClick = {
+                                        if (state.searchType == SearchType.TRACKS) {
+                                            selectedTrack = result
+                                            showBottomSheet = true
+                                        } else {
+                                            navController.currentBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("result", result)
+                                            navController.navigate(
+                                                Route.Search.Details().createPath(
+                                                    type = state.searchType.name,
+                                                    id = result.id
+                                                )
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    } else {
+                        EmptyStateMessage(
+                            title = stringResource(R.string.msg_search_no_results_filters),
+                            description = stringResource(R.string.msg_search_no_results_filters_desc),
+                            painter = painterResource(R.drawable.ic_search)
+                        )
+                    }
+                }
+
+                SearchStatus.NoResults -> {
+                    EmptyStateMessage(
+                        title = stringResource(R.string.msg_search_no_results),
+                        description = stringResource(R.string.msg_search_no_results_desc),
+                        painter = painterResource(R.drawable.ic_search)
+                    )
+                }
+
+                SearchStatus.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (state.showServerRecommendation) {
+                            EmptyStateMessage(
+                                title = stringResource(R.string.title_server_recommendation),
+                                description = stringResource(R.string.msg_server_recommendation),
+                                icon = Icons.Outlined.CloudOff
+                            )
+                        } else {
+                            EmptyStateMessage(
+                                title = stringResource(R.string.msg_unknown_error),
+                                description = state.error.formatErrorMessage(
+                                    defaultError = stringResource(R.string.msg_unknown_error)
+                                ),
+                                icon = Icons.Outlined.Error,
+                                buttonText = stringResource(R.string.action_retry),
+                                onButtonClick = { viewModel.search() }
+                            )
+                        }
                     }
                 }
             }

@@ -2,6 +2,7 @@ package app.echoirx.di
 
 import android.content.Context
 import app.echoirx.data.local.dao.DownloadDao
+import app.echoirx.data.local.dao.SearchHistoryDao
 import app.echoirx.data.media.AudioPreviewPlayer
 import app.echoirx.data.media.FFmpegProcessor
 import app.echoirx.data.media.MetadataManager
@@ -9,9 +10,11 @@ import app.echoirx.data.notification.DownloadNotificationManager
 import app.echoirx.data.permission.PermissionsManager
 import app.echoirx.data.remote.api.ApiService
 import app.echoirx.data.repository.DownloadRepositoryImpl
+import app.echoirx.data.repository.SearchHistoryRepositoryImpl
 import app.echoirx.data.repository.SearchRepositoryImpl
 import app.echoirx.data.repository.SettingsRepositoryImpl
 import app.echoirx.domain.repository.DownloadRepository
+import app.echoirx.domain.repository.SearchHistoryRepository
 import app.echoirx.domain.repository.SearchRepository
 import app.echoirx.domain.repository.SettingsRepository
 import dagger.Module
@@ -30,6 +33,12 @@ object RepositoryModule {
     fun provideSearchRepository(
         apiService: ApiService
     ): SearchRepository = SearchRepositoryImpl(apiService)
+
+    @Provides
+    @Singleton
+    fun provideSearchHistoryRepository(
+        searchHistoryDao: SearchHistoryDao
+    ): SearchHistoryRepository = SearchHistoryRepositoryImpl(searchHistoryDao)
 
     @Provides
     @Singleton

@@ -63,6 +63,7 @@
     <string name="cd_play_preview">Play preview</string>
     <string name="cd_stop_preview">Stop preview</string>
     <string name="cd_retry">Retry</string>
+    <string name="cd_delete_search">Delete search</string>
 
     <!-- Labels -->
     <string name="label_explicit">Explicit</string>
@@ -100,6 +101,9 @@
     <string name="title_reset_settings">Reset settings</string>
     <string name="title_filter_options">Filter Options</string>
     <string name="title_workers_api_limits">Workers API Limits</string>
+    <string name="title_recent_searches">Recent Searches</string>
+    <string name="title_suggestions">Suggestions</string>
+    <string name="title_clear_search_history">Clear Search History</string>
 
     <!-- Messages -->
     <string name="msg_downloads_empty">No downloads yet</string>
@@ -129,6 +133,9 @@
     <string name="msg_reset_reminder">Cloudflare Worker limits reset at midnight UTC</string>
     <string name="msg_download_restarted">Download restarted</string>
     <string name="msg_download_retry_failed">Failed to restart download</string>
+    <string name="msg_no_search_history">No search history</string>
+    <string name="msg_no_search_history_desc">Your recent searches will appear here</string>
+    <string name="msg_clear_search_history_subtitle">Remove all your saved searches</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
@@ -144,6 +151,8 @@
     <string name="dialog_reset_settings_message">Are you sure you want to reset all settings to default? This cannot be undone.</string>
     <string name="dialog_clear_data_title">Clear Data?</string>
     <string name="dialog_clear_data_message">Are you sure you want to clear download history and cache? This cannot be undone.</string>
+    <string name="dialog_clear_history_title">Clear Search History?</string>
+    <string name="dialog_clear_history_message">Are you sure you want to clear your search history? This cannot be undone.</string>
 
     <!-- Actions -->
     <string name="action_clear_search">Clear</string>
@@ -152,6 +161,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_reset">Reset</string>
     <string name="action_clear">Clear</string>
+    <string name="action_clear_all">Clear All</string>
     <string name="action_save">Save</string>
     <string name="action_reset_to_default">Reset to Default</string>
     <string name="action_open_settings">Go to Settings</string>

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudQueue
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.RestartAlt
@@ -55,6 +56,7 @@ fun SettingsScreen(
     var showFormatSheet by remember { mutableStateOf(false) }
     var showResetSheet by remember { mutableStateOf(false) }
     var showClearDataSheet by remember { mutableStateOf(false) }
+    var showClearHistorySheet by remember { mutableStateOf(false) }
     var showRegionSheet by remember { mutableStateOf(false) }
     var showServerSheet by remember { mutableStateOf(false) }
 
@@ -113,6 +115,20 @@ fun SettingsScreen(
                 viewModel.clearData()
             },
             onDismiss = { showClearDataSheet = false }
+        )
+    }
+
+    if (showClearHistorySheet) {
+        SettingsActionBottomSheet(
+            title = stringResource(R.string.dialog_clear_history_title),
+            description = stringResource(R.string.dialog_clear_history_message),
+            icon = Icons.Outlined.History,
+            confirmText = stringResource(R.string.action_clear),
+            cancelText = stringResource(R.string.action_cancel),
+            onConfirm = {
+                viewModel.clearSearchHistory()
+            },
+            onDismiss = { showClearHistorySheet = false }
         )
     }
 
@@ -220,11 +236,21 @@ fun SettingsScreen(
 
         item {
             PreferenceItem(
+                title = stringResource(R.string.title_clear_search_history),
+                subtitle = stringResource(R.string.msg_clear_search_history_subtitle),
+                icon = Icons.Outlined.History,
+                onClick = { showClearHistorySheet = true },
+                position = PreferencePosition.Top
+            )
+        }
+
+        item {
+            PreferenceItem(
                 title = stringResource(R.string.title_clear_data),
                 subtitle = stringResource(R.string.msg_clear_data_subtitle),
                 icon = Icons.Outlined.Delete,
                 onClick = { showClearDataSheet = true },
-                position = PreferencePosition.Top
+                position = PreferencePosition.Middle
             )
         }
 

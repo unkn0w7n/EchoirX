@@ -8,15 +8,20 @@ import app.echoirx.R
 import app.echoirx.data.media.AudioPreviewPlayer
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.QualityConfig
+import app.echoirx.domain.model.SearchHistoryItem
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.usecase.ProcessDownloadUseCase
+import app.echoirx.domain.usecase.SearchHistoryUseCase
 import app.echoirx.domain.usecase.SearchUseCase
 import app.echoirx.domain.usecase.SettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
+    private val searchHistoryUseCase: SearchHistoryUseCase,
     private val processDownloadUseCase: ProcessDownloadUseCase,
     private val settingsUseCase: SettingsUseCase,
     private val audioPreviewPlayer: AudioPreviewPlayer,
@@ -34,6 +40,40 @@ class SearchViewModel @Inject constructor(
 
     val isPreviewPlaying = audioPreviewPlayer.isPlaying
 
+    init {
+        loadSearchHistory()
+        setupQueryListener()
+    }
+
+    private fun loadSearchHistory() {
+        viewModelScope.launch {
+            searchHistoryUseCase.getRecentSearches().collect { history ->
+                _state.update { it.copy(searchHistory = history) }
+            }
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun setupQueryListener() {
+        viewModelScope.launch {
+            _state
+                .debounce(300)
+                .distinctUntilChanged { old, new -> old.query == new.query }
+                .collect { state ->
+                    if (state.query.isNotBlank() && state.query.length >= 2) {
+                        updateSuggestions(state.query)
+                    } else {
+                        _state.update { it.copy(suggestedQueries = emptyList()) }
+                    }
+                }
+        }
+    }
+
+    private suspend fun updateSuggestions(query: String) {
+        val suggestions = searchHistoryUseCase.searchHistory(query)
+        _state.update { it.copy(suggestedQueries = suggestions) }
+    }
+
     fun onQueryChange(query: String) {
         _state.update {
             it.copy(
@@ -41,7 +81,8 @@ class SearchViewModel @Inject constructor(
                 status = when {
                     query.isEmpty() -> SearchStatus.Empty
                     else -> SearchStatus.Ready
-                }
+                },
+                isShowingHistory = query.isEmpty()
             )
         }
     }
@@ -102,12 +143,16 @@ class SearchViewModel @Inject constructor(
 
     fun search() {
         val currentState = _state.value
+        val query = currentState.query.trim()
+
+        if (query.isBlank()) return
 
         viewModelScope.launch {
             try {
                 _state.update {
                     it.copy(
-                        status = SearchStatus.Loading
+                        status = SearchStatus.Loading,
+                        isShowingHistory = false
                     )
                 }
 
@@ -126,9 +171,11 @@ class SearchViewModel @Inject constructor(
                 }
 
                 val results = when (currentState.searchType) {
-                    SearchType.TRACKS -> searchUseCase.searchTracks(currentState.query)
-                    SearchType.ALBUMS -> searchUseCase.searchAlbums(currentState.query)
+                    SearchType.TRACKS -> searchUseCase.searchTracks(query)
+                    SearchType.ALBUMS -> searchUseCase.searchAlbums(query)
                 }
+
+                searchHistoryUseCase.addSearch(query, currentState.searchType)
 
                 _state.update {
                     it.copy(
@@ -180,7 +227,8 @@ class SearchViewModel @Inject constructor(
                 filteredResults = emptyList(),
                 error = null,
                 status = SearchStatus.Empty,
-                showServerRecommendation = false
+                showServerRecommendation = false,
+                isShowingHistory = true
             )
         }
     }
@@ -200,6 +248,28 @@ class SearchViewModel @Inject constructor(
 
     fun stopTrackPreview() {
         audioPreviewPlayer.stop()
+    }
+
+    fun useHistoryItem(item: SearchHistoryItem) {
+        _state.update {
+            it.copy(
+                query = item.query,
+                searchType = SearchType.valueOf(item.type)
+            )
+        }
+        search()
+    }
+
+    fun deleteHistoryItem(item: SearchHistoryItem) {
+        viewModelScope.launch {
+            searchHistoryUseCase.deleteSearch(item)
+        }
+    }
+
+    fun clearSearchHistory() {
+        viewModelScope.launch {
+            searchHistoryUseCase.clearHistory()
+        }
     }
 
     override fun onCleared() {

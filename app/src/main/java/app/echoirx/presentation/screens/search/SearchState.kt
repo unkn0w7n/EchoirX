@@ -2,6 +2,7 @@ package app.echoirx.presentation.screens.search
 
 import androidx.annotation.StringRes
 import app.echoirx.R
+import app.echoirx.domain.model.SearchHistoryItem
 import app.echoirx.domain.model.SearchResult
 
 data class SearchState(
@@ -10,9 +11,12 @@ data class SearchState(
     val searchFilter: SearchFilter = SearchFilter(),
     val results: List<SearchResult> = emptyList(),
     val filteredResults: List<SearchResult> = emptyList(),
+    val searchHistory: List<SearchHistoryItem> = emptyList(),
+    val suggestedQueries: List<SearchHistoryItem> = emptyList(),
     val status: SearchStatus = SearchStatus.Empty,
     val error: String? = null,
-    val showServerRecommendation: Boolean = false
+    val showServerRecommendation: Boolean = false,
+    val isShowingHistory: Boolean = false
 )
 
 enum class SearchType(

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import app.echoirx.data.local.dao.DownloadDao
 import app.echoirx.domain.model.FileNamingFormat
+import app.echoirx.domain.repository.SearchHistoryRepository
 import app.echoirx.domain.usecase.SettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,6 +22,7 @@ class SettingsViewModel @Inject constructor(
     private val settingsUseCase: SettingsUseCase,
     private val workManager: WorkManager,
     private val downloadDao: DownloadDao,
+    private val searchHistoryRepository: SearchHistoryRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
@@ -107,7 +109,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             workManager.cancelAllWork()
             downloadDao.deleteAll()
+            searchHistoryRepository.clearHistory()
             context.cacheDir.deleteRecursively()
+        }
+    }
+
+    fun clearSearchHistory() {
+        viewModelScope.launch {
+            searchHistoryRepository.clearHistory()
         }
     }
 
