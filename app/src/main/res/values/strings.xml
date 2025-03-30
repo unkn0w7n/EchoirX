@@ -78,6 +78,8 @@
     <string name="label_completed">Completed</string>
     <string name="label_failed">Failed</string>
     <string name="label_file_missing">File missing</string>
+    <string name="label_current_utc">Current UTC: %1$s %2$s</string>
+    <string name="label_time_until_reset">%1$d hours, %2$d minutes, %3$d seconds until reset</string>
 
     <!-- Titles -->
     <string name="title_active_downloads">Active downloads</string>
@@ -96,6 +98,7 @@
     <string name="title_clear_data">Clear data</string>
     <string name="title_reset_settings">Reset settings</string>
     <string name="title_filter_options">Filter Options</string>
+    <string name="title_workers_api_limits">Workers API Limits</string>
 
     <!-- Messages -->
     <string name="msg_downloads_empty">No downloads yet</string>
@@ -122,6 +125,7 @@
     <string name="msg_file_deleted">File deleted</string>
     <string name="msg_removed_from_history">Removed from download history</string>
     <string name="msg_preview_error">Couldn\'t play the preview</string>
+    <string name="msg_reset_reminder">Cloudflare Worker limits reset at midnight UTC</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Downloads</string>
