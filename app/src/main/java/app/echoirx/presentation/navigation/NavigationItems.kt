@@ -6,28 +6,24 @@ import app.echoirx.R
 
 data class NavigationItem(
     val route: String,
-    @DrawableRes val outlinedIcon: Int,
-    @DrawableRes val filledIcon: Int,
+    @DrawableRes val icon: Int,
     @StringRes val label: Int
 )
 
 val navigationItems = listOf(
     NavigationItem(
         route = Route.Home.path,
-        outlinedIcon = R.drawable.ic_home,
-        filledIcon = R.drawable.ic_home_filled,
+        icon = R.drawable.ic_home,
         label = R.string.nav_home
     ),
     NavigationItem(
         route = Route.Search.Main.path,
-        outlinedIcon = R.drawable.ic_search,
-        filledIcon = R.drawable.ic_search_filled,
+        icon = R.drawable.ic_search,
         label = R.string.nav_search
     ),
     NavigationItem(
         route = Route.Settings.path,
-        outlinedIcon = R.drawable.ic_settings,
-        filledIcon = R.drawable.ic_settings_filled,
+        icon = R.drawable.ic_settings,
         label = R.string.nav_settings
     )
 )

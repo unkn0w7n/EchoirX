@@ -49,9 +49,7 @@ fun EchoirBottomNav(
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(
-                            if (isSelected) item.filledIcon else item.outlinedIcon
-                        ),
+                        painter = painterResource(item.icon),
                         contentDescription = stringResource(item.label),
                     )
                 },
