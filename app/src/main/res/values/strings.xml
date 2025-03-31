@@ -211,4 +211,9 @@
     <string name="error_empty_server_url">Server URL cannot be empty</string>
     <string name="error_example_server">Cannot connect to example server. Please configure a real server URL in Settings.</string>
 
+    <!-- Cloudflare Rate Limit -->
+    <string name="cloudflare_rate_limit_title">Daily Request Limit Reached</string>
+    <string name="cloudflare_rate_limit_message">Our Cloudflare server has reached its daily request limit. This affects all users, not just you. Service will resume automatically at 00:00 UTC.</string>
+    <string name="cloudflare_rate_limit_exception">Cloudflare rate limit exceeded. Service will resume at 00:00 UTC.</string>
+
 </resources>

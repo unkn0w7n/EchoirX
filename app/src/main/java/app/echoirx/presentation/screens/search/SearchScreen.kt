@@ -123,11 +123,16 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .focusRequester(focusRequester),
+                enabled = state.searchEnabled,
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(
+                        alpha = 0.6f
+                    )
                 ),
                 shape = MaterialTheme.shapes.small,
                 placeholder = {
@@ -148,7 +153,8 @@ fun SearchScreen(
                 trailingIcon = {
                     if (state.query.isNotEmpty()) {
                         IconButton(
-                            onClick = { viewModel.clearSearch() }
+                            onClick = { viewModel.clearSearch() },
+                            enabled = state.searchEnabled
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_clear),
@@ -183,6 +189,7 @@ fun SearchScreen(
                             viewModel.onSearchTypeChange(type)
                             focusManager.clearFocus()
                         },
+                        enabled = state.searchEnabled,
                         label = {
                             Text(
                                 text = stringResource(type.title),
@@ -190,7 +197,7 @@ fun SearchScreen(
                             )
                         },
                         border = FilterChipDefaults.filterChipBorder(
-                            enabled = true,
+                            enabled = state.searchEnabled,
                             selected = state.searchType == type,
                             borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                         )
@@ -214,7 +221,8 @@ fun SearchScreen(
                     state = rememberTooltipState()
                 ) {
                     IconButton(
-                        onClick = { showFilterBottomSheet = true }
+                        onClick = { showFilterBottomSheet = true },
+                        enabled = state.searchEnabled
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.FilterAlt,
@@ -330,6 +338,14 @@ fun SearchScreen(
                     )
                 }
 
+                SearchStatus.RateLimitExceeded -> {
+                    EmptyStateMessage(
+                        title = stringResource(R.string.cloudflare_rate_limit_title),
+                        description = stringResource(R.string.cloudflare_rate_limit_message),
+                        icon = Icons.Outlined.CloudOff
+                    )
+                }
+
                 SearchStatus.Error -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -386,7 +402,6 @@ fun SearchScreen(
             }
         )
     }
-
 
     if (showFilterBottomSheet) {
         FilterBottomSheet(
