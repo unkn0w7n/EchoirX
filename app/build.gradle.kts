@@ -31,7 +31,7 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = (100000000 + Instant.now().toEpochMilli() / 1000).toInt()
-        versionName = "1.3"
+        versionName = "1.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders += mutableMapOf(

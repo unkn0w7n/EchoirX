@@ -1,22 +1,21 @@
 ### Changelog
 
-#### Version 1.3
+#### Version 1.4
 **Release Date:** March 31, 2025
 
 ---
-- **Search Improvements:**
-  - Added search history support
-  - Direct URL input support for track/album searches
+- **Service Reliability Improvements:**
+  - Added automatic handling of Cloudflare daily limits
+  - App will now clearly inform you when service limits are reached
+  - Search automatically becomes available again after limits reset
+  - Your app remembers limit status even if you close and reopen it
 
-- **UI Enhancements:**
-  - Added retry button for failed downloads
-  - Fixed snackbar colors to properly follow app theme
-  - Standardized navigation with outlined icons
-  - Added UTC time display with Cloudflare reset countdown
+- **Visual Improvements:**
+  - Tooltips now match the app's color theme for better visibility
 
 - **Bug Fixes:**
-  - Resolved MediaPlayer URL handling issues that prevented audio previews from playing
-  - Various performance optimizations and stability improvements
+  - Fixed search history duplicating entries when selecting the same item multiple times
+  - Improved deletion behavior to remove only the specific history item rather than all matching items
 
 > [!IMPORTANT]
 > Server URL Configuration Required
@@ -28,9 +27,8 @@
 > [!NOTE]
 > Backend Server Update
 >
-> We've switched to Cloudflare for API services, using Cloudflare KV for token storage with Upstash Redis as fallback.
-> The free plan has daily usage limits that reset at 00:00 UTC.
-> Please be patient if you experience temporary service limitations.
+> We've switched to Cloudflare for API services, which has daily usage limits that reset at 00:00 UTC.
+> If you see a message about service limits being reached, normal functionality will automatically resume after midnight UTC.
 
 > [!WARNING]
 > The app will not function without a valid server URL
