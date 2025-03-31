@@ -69,7 +69,10 @@ fun DownloadOptions(
                 TooltipBox(
                     positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                     tooltip = {
-                        PlainTooltip {
+                        PlainTooltip(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ) {
                             Text(
                                 text = stringResource(config.summary)
                             )

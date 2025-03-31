@@ -202,7 +202,10 @@ fun SearchScreen(
                 TooltipBox(
                     positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                     tooltip = {
-                        PlainTooltip {
+                        PlainTooltip(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        ) {
                             Text(
                                 text = stringResource(R.string.tooltip_filter)
                             )
