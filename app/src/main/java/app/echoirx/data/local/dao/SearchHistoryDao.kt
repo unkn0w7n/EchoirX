@@ -18,9 +18,18 @@ interface SearchHistoryDao {
     @Query("DELETE FROM search_history WHERE query = :query AND type = :type")
     suspend fun deleteSearch(query: String, type: String)
 
+    @Query("DELETE FROM search_history WHERE id = :id")
+    suspend fun deleteSearchById(id: Long)
+
     @Query("DELETE FROM search_history")
     suspend fun clearSearchHistory()
 
     @Query("SELECT * FROM search_history WHERE query LIKE :query || '%' ORDER BY timestamp DESC LIMIT :limit")
     suspend fun searchHistory(query: String, limit: Int = 10): List<SearchHistoryItem>
+
+    @Query("SELECT * FROM search_history WHERE query = :query AND type = :type LIMIT 1")
+    suspend fun findExistingSearch(query: String, type: String): SearchHistoryItem?
+
+    @Query("UPDATE search_history SET timestamp = :timestamp WHERE id = :id")
+    suspend fun updateSearchTimestamp(id: Long, timestamp: Long)
 }

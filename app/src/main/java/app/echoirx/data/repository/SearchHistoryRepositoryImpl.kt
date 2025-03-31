@@ -19,11 +19,21 @@ class SearchHistoryRepositoryImpl @Inject constructor(
     override suspend fun addSearch(query: String, type: String) {
         if (query.isBlank()) return
 
-        val item = SearchHistoryItem(
-            query = query.trim(),
-            type = type
-        )
-        searchHistoryDao.insertSearch(item)
+        val existing = searchHistoryDao.findExistingSearch(query.trim(), type)
+
+        if (existing != null) {
+            searchHistoryDao.updateSearchTimestamp(existing.id, System.currentTimeMillis())
+        } else {
+            val item = SearchHistoryItem(
+                query = query.trim(),
+                type = type
+            )
+            searchHistoryDao.insertSearch(item)
+        }
+    }
+
+    override suspend fun deleteSearch(id: Long) {
+        searchHistoryDao.deleteSearchById(id)
     }
 
     override suspend fun deleteSearch(query: String, type: String) {

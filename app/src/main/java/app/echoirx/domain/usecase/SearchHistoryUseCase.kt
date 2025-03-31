@@ -18,7 +18,7 @@ class SearchHistoryUseCase @Inject constructor(
     }
 
     suspend fun deleteSearch(item: SearchHistoryItem) =
-        repository.deleteSearch(item.query, item.type)
+        repository.deleteSearch(item.id)
 
     suspend fun clearHistory() =
         repository.clearHistory()
