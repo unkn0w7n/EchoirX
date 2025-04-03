@@ -16,8 +16,6 @@ data class SearchState(
     val status: SearchStatus = SearchStatus.Empty,
     val error: String? = null,
     val showServerRecommendation: Boolean = false,
-    val showCloudflareRateLimitMessage: Boolean = false,
-    val searchEnabled: Boolean = true,
     val isShowingHistory: Boolean = false
 )
 
@@ -57,5 +55,4 @@ sealed class SearchStatus {
     data object Success : SearchStatus()
     data object NoResults : SearchStatus()
     data object Error : SearchStatus()
-    data object RateLimitExceeded : SearchStatus()
 }

@@ -31,9 +31,8 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideSearchRepository(
-        apiService: ApiService,
-        @ApplicationContext context: Context
-    ): SearchRepository = SearchRepositoryImpl(apiService, context)
+        apiService: ApiService
+    ): SearchRepository = SearchRepositoryImpl(apiService)
 
     @Provides
     @Singleton

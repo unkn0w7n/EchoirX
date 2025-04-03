@@ -42,8 +42,6 @@ import app.echoirx.presentation.screens.settings.components.FileNamingBottomShee
 import app.echoirx.presentation.screens.settings.components.RegionBottomSheet
 import app.echoirx.presentation.screens.settings.components.ServerBottomSheet
 import app.echoirx.presentation.screens.settings.components.SettingsActionBottomSheet
-import app.echoirx.presentation.screens.settings.components.WorkerLimitsInfo
-import app.echoirx.presentation.screens.settings.components.WorkerLimitsNote
 
 @Composable
 fun SettingsScreen(
@@ -184,20 +182,6 @@ fun SettingsScreen(
                 onClick = { showServerSheet = true },
                 position = PreferencePosition.Bottom
             )
-        }
-
-        if (state.serverUrl.contains("workers", ignoreCase = true)) {
-            item {
-                PreferenceCategory(title = stringResource(R.string.title_workers_api_limits))
-            }
-
-            item {
-                WorkerLimitsInfo(position = PreferencePosition.Single)
-            }
-
-            item {
-                WorkerLimitsNote()
-            }
         }
 
         item {

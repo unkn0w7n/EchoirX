@@ -4,7 +4,6 @@ import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.presentation.screens.search.SearchFilter
 import app.echoirx.presentation.screens.search.SearchType
-import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
     suspend fun search(query: String, type: SearchType): List<SearchResult>
@@ -15,7 +14,4 @@ interface SearchRepository {
     ): List<SearchResult>
 
     suspend fun getTrackPreview(trackId: Long): PlaybackResponse
-
-    val isRateLimited: Flow<Boolean>
-    suspend fun setRateLimited(limited: Boolean)
 }

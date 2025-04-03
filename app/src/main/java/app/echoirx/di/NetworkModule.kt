@@ -1,22 +1,18 @@
 package app.echoirx.di
 
-import android.content.Context
+import app.echoirx.BuildConfig
 import app.echoirx.data.remote.api.ApiService
-import app.echoirx.data.remote.api.CloudflareRateLimitException
 import app.echoirx.domain.repository.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.HttpCallValidator
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.time.Duration
@@ -28,7 +24,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideKtorClient(@ApplicationContext context: Context): HttpClient = HttpClient(OkHttp) {
+    fun provideKtorClient(): HttpClient = HttpClient(OkHttp) {
         install(HttpTimeout) {
             requestTimeoutMillis = Duration.ofMinutes(2).toMillis()
             connectTimeoutMillis = Duration.ofSeconds(20).toMillis()
@@ -47,17 +43,8 @@ object NetworkModule {
             })
         }
 
-        expectSuccess = true
-
-        install(HttpCallValidator) {
-            handleResponseExceptionWithRequest { cause, _ ->
-                if (cause is ClientRequestException && cause.response.status == HttpStatusCode.TooManyRequests) {
-                    val contentType = cause.response.headers["Content-Type"] ?: ""
-                    if (contentType.contains("text/html", ignoreCase = true)) {
-                        throw CloudflareRateLimitException.create(context)
-                    }
-                }
-            }
+        defaultRequest {
+            headers.append("X-App-Version", BuildConfig.VERSION_NAME)
         }
 
         engine {
@@ -74,6 +61,6 @@ object NetworkModule {
     @Singleton
     fun provideApiService(
         client: HttpClient,
-        settingsRepository: SettingsRepository,
+        settingsRepository: SettingsRepository
     ): ApiService = ApiService(client, settingsRepository)
 }

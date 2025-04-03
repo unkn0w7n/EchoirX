@@ -6,12 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.R
 import app.echoirx.data.media.AudioPreviewPlayer
-import app.echoirx.data.remote.api.CloudflareRateLimitException
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.QualityConfig
 import app.echoirx.domain.model.SearchHistoryItem
 import app.echoirx.domain.model.SearchResult
-import app.echoirx.domain.repository.SearchRepository
 import app.echoirx.domain.usecase.ProcessDownloadUseCase
 import app.echoirx.domain.usecase.SearchHistoryUseCase
 import app.echoirx.domain.usecase.SearchUseCase
@@ -35,7 +33,6 @@ class SearchViewModel @Inject constructor(
     private val processDownloadUseCase: ProcessDownloadUseCase,
     private val settingsUseCase: SettingsUseCase,
     private val audioPreviewPlayer: AudioPreviewPlayer,
-    private val searchRepository: SearchRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SearchState())
@@ -46,33 +43,6 @@ class SearchViewModel @Inject constructor(
     init {
         loadSearchHistory()
         setupQueryListener()
-        checkRateLimitState()
-    }
-
-    private fun checkRateLimitState() {
-        viewModelScope.launch {
-            searchRepository.isRateLimited.collect { isLimited ->
-                if (isLimited) {
-                    _state.update {
-                        it.copy(
-                            status = SearchStatus.RateLimitExceeded,
-                            searchEnabled = false,
-                            error = context.getString(R.string.cloudflare_rate_limit_message)
-                        )
-                    }
-                } else {
-                    if (_state.value.status == SearchStatus.RateLimitExceeded) {
-                        _state.update {
-                            it.copy(
-                                status = SearchStatus.Ready,
-                                searchEnabled = true,
-                                error = null
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun loadSearchHistory() {
@@ -110,10 +80,7 @@ class SearchViewModel @Inject constructor(
                 query = query,
                 status = when {
                     query.isEmpty() -> SearchStatus.Empty
-                    else -> if (it.status == SearchStatus.RateLimitExceeded)
-                        SearchStatus.RateLimitExceeded
-                    else
-                        SearchStatus.Ready
+                    else -> SearchStatus.Ready
                 },
                 isShowingHistory = query.isEmpty()
             )
@@ -126,7 +93,7 @@ class SearchViewModel @Inject constructor(
                 searchType = type
             )
         }
-        if (_state.value.query.isNotEmpty() && _state.value.searchEnabled) {
+        if (_state.value.query.isNotEmpty()) {
             search()
         }
     }
@@ -178,15 +145,14 @@ class SearchViewModel @Inject constructor(
         val currentState = _state.value
         val query = currentState.query.trim()
 
-        if (query.isBlank() || !currentState.searchEnabled) return
+        if (query.isBlank()) return
 
         viewModelScope.launch {
             try {
                 _state.update {
                     it.copy(
                         status = SearchStatus.Loading,
-                        isShowingHistory = false,
-                        error = null
+                        isShowingHistory = false
                     )
                 }
 
@@ -223,53 +189,20 @@ class SearchViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                handleSearchError(e)
-            }
-        }
-    }
+                // Check if the error might be related to the example server
+                val serverUrl = settingsUseCase.getServerUrl()
+                val isExampleServer = serverUrl.contains("example.com") ||
+                        e.message?.contains("example.com") == true
 
-    private fun handleSearchError(e: Exception) {
-        Log.e("SearchViewModel", "Search error", e)
-
-        val isRateLimitError = e is CloudflareRateLimitException
-
-        if (isRateLimitError) {
-            viewModelScope.launch {
-                searchRepository.setRateLimited(true)
-            }
-
-            _state.update {
-                it.copy(
-                    error = context.getString(R.string.cloudflare_rate_limit_message),
-                    status = SearchStatus.RateLimitExceeded,
-                    searchEnabled = false
-                )
-            }
-        } else {
-            viewModelScope.launch {
-                try {
-                    val serverUrl = settingsUseCase.getServerUrl()
-                    val isExampleServer = serverUrl.contains("example.com") ||
-                            e.message?.contains("example.com") == true
-
-                    _state.update {
-                        it.copy(
-                            error = if (isExampleServer)
-                                context.getString(R.string.error_example_server)
-                            else
-                                e.message,
-                            status = SearchStatus.Error,
-                            showServerRecommendation = isExampleServer
-                        )
-                    }
-                } catch (ex: Exception) {
-                    Log.e("SearchViewModel", "Error checking server URL", ex)
-                    _state.update {
-                        it.copy(
-                            error = e.message,
-                            status = SearchStatus.Error
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        error = if (isExampleServer)
+                            context.getString(R.string.error_example_server)
+                        else
+                            e.message,
+                        status = SearchStatus.Error,
+                        showServerRecommendation = isExampleServer
+                    )
                 }
             }
         }
@@ -293,10 +226,7 @@ class SearchViewModel @Inject constructor(
                 results = emptyList(),
                 filteredResults = emptyList(),
                 error = null,
-                status = if (it.status == SearchStatus.RateLimitExceeded)
-                    SearchStatus.RateLimitExceeded
-                else
-                    SearchStatus.Empty,
+                status = SearchStatus.Empty,
                 showServerRecommendation = false,
                 isShowingHistory = true
             )
