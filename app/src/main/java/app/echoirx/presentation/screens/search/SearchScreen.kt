@@ -348,8 +348,6 @@ fun SearchScreen(
                                     defaultError = stringResource(R.string.msg_unknown_error)
                                 ),
                                 icon = Icons.Outlined.Error,
-                                buttonText = stringResource(R.string.action_retry),
-                                onButtonClick = { viewModel.search() }
                             )
                         }
                     }
