@@ -47,7 +47,7 @@ fun DownloadOptions(
                 add(QualityConfig.HiRes)
             }
 
-            if (hasStereo && !hasDolbyAtmos) {
+            if (hasStereo) {
                 if ("LOSSLESS" in formats) {
                     add(QualityConfig.Lossless)
                 }
