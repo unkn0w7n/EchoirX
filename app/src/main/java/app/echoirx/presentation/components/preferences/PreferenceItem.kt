@@ -30,6 +30,7 @@ fun PreferenceItem(
     onClick: (() -> Unit)? = null,
     iconTint: Color = LocalContentColor.current,
     position: PreferencePosition = PreferencePosition.Single,
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
     val shape = when (position) {
         PreferencePosition.Single -> RoundedCornerShape(12.dp)
@@ -96,6 +97,7 @@ fun PreferenceItem(
                     modifier = Modifier.size(24.dp)
                 )
             }
-        }
+        },
+        trailingContent = trailingContent
     )
 }

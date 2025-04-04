@@ -3,6 +3,7 @@ package app.echoirx.data.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -25,6 +26,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val FILE_NAMING_FORMAT = intPreferencesKey("file_naming_format")
         val REGION = stringPreferencesKey("region")
         val SERVER_URL = stringPreferencesKey("server_url")
+        val SAVE_COVER_ART = booleanPreferencesKey("save_cover_art")
+        val SAVE_LYRICS = booleanPreferencesKey("save_lyrics")
     }
 
     // Default server URL - use this as the fallback value
@@ -72,6 +75,26 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setServerUrl(url: String) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.SERVER_URL] = url
+        }
+    }
+
+    override suspend fun getSaveCoverArt(): Boolean {
+        return context.dataStore.data.first()[PreferencesKeys.SAVE_COVER_ART] ?: false
+    }
+
+    override suspend fun setSaveCoverArt(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SAVE_COVER_ART] = enabled
+        }
+    }
+
+    override suspend fun getSaveLyrics(): Boolean {
+        return context.dataStore.data.first()[PreferencesKeys.SAVE_LYRICS] ?: false
+    }
+
+    override suspend fun setSaveLyrics(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.SAVE_LYRICS] = enabled
         }
     }
 }

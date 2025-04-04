@@ -119,6 +119,7 @@ class DownloadRepositoryImpl @Inject constructor(
             // Move to final location
             val finalPath = when (val customDir = settingsRepository.getOutputDirectory()) {
                 null -> {
+                    // Standard file system approach
                     val musicDir =
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
                     val echoirDir = File(musicDir, "Echoir").apply { mkdirs() }
@@ -137,11 +138,52 @@ class DownloadRepositoryImpl @Inject constructor(
                     val finalFile = File(targetDir, "$finalFileName.$extension")
 
                     cacheFile.copyTo(finalFile, overwrite = false)
-                    scanMedia(finalFile.absolutePath)
+
+                    // Handle extras based on settings
+                    val saveCoverArt = settingsRepository.getSaveCoverArt()
+                    val saveLyrics = settingsRepository.getSaveLyrics()
+
+                    // Save cover art if enabled
+                    if (saveCoverArt && download.cover != null) {
+                        try {
+                            val coverFilePath = "${targetDir.absolutePath}/${finalFileName}.jpg"
+                            if (metadataManager.extractAndSaveCoverArt(
+                                    download.cover.replace(
+                                        "80x80",
+                                        "1280x1280"
+                                    ),
+                                    coverFilePath
+                                )
+                            ) {
+                                // Also scan the cover art file
+                                scanMedia(coverFilePath, "image/jpeg")
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to save cover art as file", e)
+                            // Continue with the download even if saving cover art fails
+                        }
+                    }
+
+                    // Save lyrics if enabled
+                    if (saveLyrics) {
+                        try {
+                            val lyricsFilePath = "${targetDir.absolutePath}/${finalFileName}.lrc"
+                            if (metadataManager.extractAndSaveLyrics(metadata, lyricsFilePath)) {
+                                // Also scan the lyrics file
+                                scanMedia(lyricsFilePath, "text/plain")
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to save lyrics as file", e)
+                            // Continue with the download even if saving lyrics fails
+                        }
+                    }
+
+                    scanMedia(finalFile.absolutePath, "audio/*")
                     finalFile.absolutePath
                 }
 
                 else -> {
+                    // Storage Access Framework approach
                     val uri = customDir.toUri()
                     val directory = DocumentFile.fromTreeUri(context, uri)
                         ?: throw IOException("Could not access directory")
@@ -159,12 +201,57 @@ class DownloadRepositoryImpl @Inject constructor(
                         targetDir.findFile("$name.$extension") != null
                     }
 
-                    val finalFile = targetDir.createFile("*/*", "$finalFileName.$extension")
+                    // Create audio file
+                    val finalFile = targetDir.createFile("audio/*", "$finalFileName.$extension")
                         ?: throw IOException("Could not create file")
 
                     context.contentResolver.openOutputStream(finalFile.uri)?.use { output ->
                         cacheFile.inputStream().use { it.copyTo(output) }
                     } ?: throw IOException("Could not open output stream")
+
+                    // Handle extras based on settings
+                    val saveCoverArt = settingsRepository.getSaveCoverArt()
+                    val saveLyrics = settingsRepository.getSaveLyrics()
+
+                    // Save cover art if enabled
+                    if (saveCoverArt && download.cover != null) {
+                        try {
+                            val coverImageData = metadataManager.downloadCoverArt(download.cover)
+                            if (coverImageData != null) {
+                                val coverFile =
+                                    targetDir.createFile("image/jpeg", "$finalFileName.jpg")
+                                coverFile?.let {
+                                    context.contentResolver.openOutputStream(it.uri)
+                                        ?.use { output ->
+                                            output.write(coverImageData)
+                                        }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to save cover art with SAF", e)
+                            // Continue with the download even if saving cover art fails
+                        }
+                    }
+
+                    // Save lyrics if enabled
+                    if (saveLyrics) {
+                        try {
+                            val lyrics = metadataManager.extractLyrics(metadata)
+                            if (lyrics != null) {
+                                val lyricsFile =
+                                    targetDir.createFile("text/plain", "$finalFileName.lrc")
+                                lyricsFile?.let {
+                                    context.contentResolver.openOutputStream(it.uri)
+                                        ?.use { output ->
+                                            output.write(lyrics.toByteArray())
+                                        }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to save lyrics with SAF", e)
+                            // Continue with the download even if saving lyrics fails
+                        }
+                    }
 
                     finalFile.uri.toString()
                 }
@@ -259,20 +346,21 @@ class DownloadRepositoryImpl @Inject constructor(
         return name
     }
 
-    private suspend fun scanMedia(path: String) {
+    private suspend fun scanMedia(path: String, mimeType: String = "audio/*") {
         withContext(Dispatchers.Main) {
             MediaScannerConnection.scanFile(
                 context,
                 arrayOf(path),
-                arrayOf("audio/*")
-            ) { scannedPath, uri ->
-                if (uri != null) {
-                    Log.i(TAG, "Media scan completed for: $scannedPath")
-                    Log.i(TAG, "Scanned URI: $uri")
-                } else {
-                    Log.e(TAG, "Media scan failed for: $scannedPath")
+                arrayOf(mimeType),
+                { scannedPath, uri ->
+                    if (uri != null) {
+                        Log.i(TAG, "Media scan completed for: $scannedPath")
+                        Log.i(TAG, "Scanned URI: $uri")
+                    } else {
+                        Log.e(TAG, "Media scan failed for: $scannedPath")
+                    }
                 }
-            }
+            )
         }
     }
 

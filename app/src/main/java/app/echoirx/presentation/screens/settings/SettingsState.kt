@@ -6,5 +6,7 @@ data class SettingsState(
     val outputDirectory: String? = null,
     val fileNamingFormat: FileNamingFormat = FileNamingFormat.TITLE_ONLY,
     val region: String = "BR",
-    val serverUrl: String = "https://echoir.vercel.app/api"
+    val serverUrl: String = "https://example.com/api/echoir",
+    val saveCoverArt: Boolean = false,
+    val saveLyrics: Boolean = false
 )

@@ -1,6 +1,8 @@
 package app.echoirx
 
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,14 +21,23 @@ class MainActivity : ComponentActivity() {
 
     private val permissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
+    ) { _ ->
+        checkAndRequestAllFilesAccess()
+    }
+
+    private val allFilesAccessLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
     ) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // Request permissions
         if (!permissionsManager.arePermissionsGranted()) {
             permissionsLauncher.launch(permissionsManager.requiredPermissions)
+        } else {
+            checkAndRequestAllFilesAccess()
         }
 
         setContent {
@@ -34,6 +45,14 @@ class MainActivity : ComponentActivity() {
 
             EchoirTheme {
                 MainScreen(navController = navController)
+            }
+        }
+    }
+
+    private fun checkAndRequestAllFilesAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            permissionsManager.getAllFilesAccessIntent()?.let { intent ->
+                allFilesAccessLauncher.launch(intent)
             }
         }
     }
