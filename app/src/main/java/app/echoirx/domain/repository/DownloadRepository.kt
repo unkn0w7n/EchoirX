@@ -2,7 +2,6 @@ package app.echoirx.domain.repository
 
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadStatus
-import app.echoirx.domain.model.PlaybackRequest
 import app.echoirx.domain.model.PlaybackResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -11,12 +10,14 @@ interface DownloadRepository {
         downloadId: String,
         trackId: Long,
         quality: String,
-        ac4: Boolean,
-        immersive: Boolean,
         onProgress: suspend (Int) -> Unit
     ): Result<String>
 
-    suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponse, Map<String, String>>
+    suspend fun getDownloadInfo(
+        trackId: Long,
+        quality: String
+    ): Pair<PlaybackResponse, Map<String, String>>
+
     suspend fun saveDownload(download: Download)
     suspend fun updateDownloadProgress(downloadId: String, progress: Int)
     suspend fun updateDownloadStatus(downloadId: String, status: DownloadStatus)

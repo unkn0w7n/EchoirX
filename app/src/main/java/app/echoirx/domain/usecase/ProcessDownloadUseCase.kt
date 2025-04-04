@@ -30,8 +30,7 @@ class ProcessDownloadUseCase @Inject constructor(
             cover = request.track.cover,
             quality = request.config.quality,
             duration = request.track.duration,
-            explicit = request.track.explicit,
-            isAc4 = request.config.ac4
+            explicit = request.track.explicit
         )
 
         downloadRepository.saveDownload(download)
@@ -49,7 +48,6 @@ class ProcessDownloadUseCase @Inject constructor(
                 quality = request.config.quality,
                 duration = track.duration,
                 explicit = track.explicit,
-                isAc4 = request.config.ac4,
                 albumId = request.album.id,
                 albumTitle = request.album.title,
                 albumDirectory = request.downloadContext.directory

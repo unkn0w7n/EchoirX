@@ -13,7 +13,7 @@ import app.echoirx.domain.model.SearchHistoryItem
 
 @Database(
     entities = [Download::class, SearchHistoryItem::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

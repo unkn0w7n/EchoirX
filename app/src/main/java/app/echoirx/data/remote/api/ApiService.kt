@@ -2,18 +2,13 @@ package app.echoirx.data.remote.api
 
 import app.echoirx.data.remote.dto.PlaybackResponseDto
 import app.echoirx.data.remote.dto.SearchResultDto
-import app.echoirx.domain.model.PlaybackRequest
 import app.echoirx.domain.repository.SettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.request.post
 import io.ktor.client.request.prepareGet
-import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsChannel
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.ktor.utils.io.jvm.javaio.copyTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -51,22 +46,26 @@ class ApiService @Inject constructor(
             }.body()
         }
 
-    suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponseDto, Map<String, String>> =
+    suspend fun getDownloadInfo(
+        trackId: Long,
+        quality: String
+    ): Pair<PlaybackResponseDto, Map<String, String>> =
         withContext(Dispatchers.IO) {
             val region = settingsRepository.getRegion()
             val baseUrl = getBaseUrl()
 
             coroutineScope {
                 val playback = async {
-                    client.post("$baseUrl/track/playback") {
-                        contentType(ContentType.Application.Json)
-                        setBody(request.copy(country = region))
+                    client.get("$baseUrl/track/playback") {
+                        parameter("id", trackId)
+                        parameter("quality", quality)
+                        parameter("country", region)
                     }.body<PlaybackResponseDto>()
                 }
 
                 val metadata = async {
                     client.get("$baseUrl/track/metadata") {
-                        parameter("id", request.id)
+                        parameter("id", trackId)
                         parameter("country", region)
                     }.body<Map<String, String>>()
                 }

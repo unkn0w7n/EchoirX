@@ -7,8 +7,6 @@ sealed class QualityConfig(
     @StringRes val label: Int,
     @StringRes val shortLabel: Int = label,
     val quality: String,
-    val ac4: Boolean = false,
-    val immersive: Boolean = true,
     @StringRes val summary: Int
 ) {
     data object HiRes : QualityConfig(
@@ -42,15 +40,14 @@ sealed class QualityConfig(
     data object DolbyAtmosAC3 : QualityConfig(
         label = R.string.quality_label_dolby_ac3,
         shortLabel = R.string.quality_label_dolby_ac3_short,
-        quality = "DOLBY_ATMOS",
+        quality = "DOLBY_ATMOS_AC3",
         summary = R.string.quality_desc_dolby_ac3
     )
 
     data object DolbyAtmosAC4 : QualityConfig(
         label = R.string.quality_label_dolby_ac4,
         shortLabel = R.string.quality_label_dolby_ac4_short,
-        quality = "DOLBY_ATMOS",
-        ac4 = true,
+        quality = "DOLBY_ATMOS_AC4",
         summary = R.string.quality_desc_dolby_ac4
     )
 }

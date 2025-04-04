@@ -29,8 +29,6 @@ class DownloadWorker @AssistedInject constructor(
         const val KEY_DOWNLOAD_ID = "download_id"
         const val KEY_TRACK_ID = "track_id"
         const val KEY_QUALITY = "quality"
-        const val KEY_AC4 = "ac4"
-        const val KEY_IMMERSIVE = "immersive"
         const val KEY_PROGRESS = "progress"
     }
 
@@ -68,17 +66,13 @@ class DownloadWorker @AssistedInject constructor(
         if (trackId == -1L) return Result.failure()
 
         val quality = inputData.getString(KEY_QUALITY) ?: return Result.failure()
-        val ac4 = inputData.getBoolean(KEY_AC4, false)
-        val immersive = inputData.getBoolean(KEY_IMMERSIVE, false)
 
         return try {
             val download = downloadRepository.getDownloadById(downloadId)
             val result = downloadRepository.processDownload(
                 downloadId = downloadId,
                 trackId = trackId,
-                quality = quality,
-                ac4 = ac4,
-                immersive = immersive
+                quality = quality
             ) { progress ->
                 setProgress(workDataOf(KEY_PROGRESS to progress))
                 downloadRepository.updateDownloadProgress(downloadId, progress)

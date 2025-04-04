@@ -22,6 +22,5 @@ data class Download(
     val format: String? = null,
     val albumId: Long? = null,
     val albumTitle: String? = null,
-    val albumDirectory: String? = null,
-    val isAc4: Boolean = false
+    val albumDirectory: String? = null
 )

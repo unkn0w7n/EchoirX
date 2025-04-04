@@ -25,6 +25,7 @@ object DatabaseModule {
         AppDatabase.DATABASE_NAME
     )
         .addMigrations(AppDatabase.MIGRATION_1_2)
+        .fallbackToDestructiveMigration(false)
         .build()
 
     @Provides

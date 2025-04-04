@@ -13,7 +13,6 @@ import app.echoirx.data.remote.api.ApiService
 import app.echoirx.data.remote.mapper.PlaybackMapper.toDomain
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadStatus
-import app.echoirx.domain.model.PlaybackRequest
 import app.echoirx.domain.model.PlaybackResponse
 import app.echoirx.domain.repository.DownloadRepository
 import app.echoirx.domain.repository.SettingsRepository
@@ -80,21 +79,12 @@ class DownloadRepositoryImpl @Inject constructor(
         downloadId: String,
         trackId: Long,
         quality: String,
-        ac4: Boolean,
-        immersive: Boolean,
         onProgress: suspend (Int) -> Unit
     ): Result<String> = withContext(Dispatchers.IO) {
         runCatching {
             Log.d(TAG, "Starting download for track: $trackId with quality: $quality")
 
-            val (playbackInfo, metadata) = getDownloadInfo(
-                PlaybackRequest(
-                    id = trackId,
-                    quality = quality,
-                    ac4 = ac4,
-                    immersive = immersive
-                )
-            )
+            val (playbackInfo, metadata) = getDownloadInfo(trackId, quality)
 
             updateDownloadStatus(downloadId, DownloadStatus.DOWNLOADING)
 
@@ -286,8 +276,11 @@ class DownloadRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDownloadInfo(request: PlaybackRequest): Pair<PlaybackResponse, Map<String, String>> =
-        apiService.getDownloadInfo(request)
+    override suspend fun getDownloadInfo(
+        trackId: Long,
+        quality: String
+    ): Pair<PlaybackResponse, Map<String, String>> =
+        apiService.getDownloadInfo(trackId, quality)
             .let { (playbackDto, metadata) ->
                 playbackDto.toDomain() to metadata
             }

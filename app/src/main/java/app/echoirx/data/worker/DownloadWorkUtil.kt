@@ -35,9 +35,7 @@ fun enqueueDownloadWork(
             workDataOf(
                 DownloadWorker.KEY_DOWNLOAD_ID to download.downloadId,
                 DownloadWorker.KEY_TRACK_ID to download.trackId,
-                DownloadWorker.KEY_QUALITY to config.quality,
-                DownloadWorker.KEY_AC4 to config.ac4,
-                DownloadWorker.KEY_IMMERSIVE to config.immersive
+                DownloadWorker.KEY_QUALITY to config.quality
             )
         )
         .build()

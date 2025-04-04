@@ -98,7 +98,8 @@ class HomeViewModel @Inject constructor(
                 val qualityConfig = when (download.quality) {
                     "HI_RES_LOSSLESS" -> QualityConfig.HiRes
                     "LOSSLESS" -> QualityConfig.Lossless
-                    "DOLBY_ATMOS" -> if (download.isAc4) QualityConfig.DolbyAtmosAC4 else QualityConfig.DolbyAtmosAC3
+                    "DOLBY_ATMOS_AC3" -> QualityConfig.DolbyAtmosAC3
+                    "DOLBY_ATMOS_AC4" -> QualityConfig.DolbyAtmosAC4
                     "HIGH" -> QualityConfig.AAC320
                     "LOW" -> QualityConfig.AAC96
                     else -> QualityConfig.AAC320

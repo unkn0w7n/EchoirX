@@ -39,12 +39,8 @@ fun DownloadItem(
     val qualityText = when (download.quality) {
         "HI_RES_LOSSLESS" -> stringResource(QualityConfig.HiRes.label)
         "LOSSLESS" -> stringResource(QualityConfig.Lossless.label)
-        "DOLBY_ATMOS" -> if (download.isAc4) {
-            stringResource(QualityConfig.DolbyAtmosAC4.label)
-        } else {
-            stringResource(QualityConfig.DolbyAtmosAC3.label)
-        }
-
+        "DOLBY_ATMOS_AC3" -> stringResource(QualityConfig.DolbyAtmosAC3.label)
+        "DOLBY_ATMOS_AC4" -> stringResource(QualityConfig.DolbyAtmosAC4.label)
         "HIGH" -> stringResource(QualityConfig.AAC320.label)
         "LOW" -> stringResource(QualityConfig.AAC96.label)
         else -> stringResource(R.string.label_unknown)
