@@ -85,7 +85,7 @@
     <string name="title_active_downloads">Active downloads</string>
     <string name="title_download_history">Download history</string>
     <string name="title_file_naming_format">File naming format</string>
-    <string name="title_region">Region</string>
+    <string name="title_region_filter">Region Filter</string>
     <string name="title_storage">Storage</string>
     <string name="title_data">Data</string>
     <string name="title_about">About</string>
@@ -101,6 +101,9 @@
     <string name="title_recent_searches">Recent Searches</string>
     <string name="title_suggestions">Suggestions</string>
     <string name="title_clear_search_history">Clear Search History</string>
+
+    <!-- Subtitles -->
+    <string name="subtitle_region_filter">Availability: %s</string>
 
     <!-- Messages -->
     <string name="msg_downloads_empty">No downloads yet</string>
@@ -121,7 +124,8 @@
     <string name="msg_file_open_failed">Could not open file</string>
     <string name="msg_server_subtitle">Configure custom server URL</string>
     <string name="msg_file_naming_desc">Choose how your downloaded files will be named</string>
-    <string name="msg_region_desc">Select your region for content availability</string>
+    <string name="msg_region_filter_desc">Choose a region to see tracks available in that market</string>
+    <string name="msg_region_info">This setting only affects what tracks appear in search results. Some tracks are only available in certain regions.</string>
     <string name="msg_server_recommendation">You\'re using the example server URL. Please configure a real server URL in the Settings tab to search for and download music.</string>
     <string name="msg_spaces_will_be_removed">Spaces will be automatically removed</string>
     <string name="msg_file_deleted">File deleted</string>

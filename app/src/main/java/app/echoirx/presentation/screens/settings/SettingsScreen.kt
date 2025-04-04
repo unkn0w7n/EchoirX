@@ -13,10 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudQueue
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.TextFormat
 import androidx.compose.runtime.Composable
@@ -166,9 +166,9 @@ fun SettingsScreen(
         item {
             val regionName = Region.getDisplayName(Region.fromCode(state.region), context)
             PreferenceItem(
-                title = stringResource(R.string.title_region),
-                subtitle = "$regionName - ${state.region}",
-                icon = Icons.Outlined.Public,
+                title = stringResource(R.string.title_region_filter),
+                subtitle = stringResource(R.string.subtitle_region_filter, regionName),
+                icon = Icons.Outlined.FilterAlt,
                 onClick = { showRegionSheet = true },
                 position = PreferencePosition.Top
             )

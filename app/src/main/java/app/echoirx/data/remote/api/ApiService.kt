@@ -37,12 +37,10 @@ class ApiService @Inject constructor(
 
     suspend fun getAlbumTracks(albumId: Long): List<SearchResultDto> =
         withContext(Dispatchers.IO) {
-            val region = settingsRepository.getRegion()
             val baseUrl = getBaseUrl()
 
             client.get("$baseUrl/album/tracks") {
                 parameter("id", albumId)
-                parameter("country", region)
             }.body()
         }
 
@@ -51,7 +49,6 @@ class ApiService @Inject constructor(
         quality: String
     ): Pair<PlaybackResponseDto, Map<String, String>> =
         withContext(Dispatchers.IO) {
-            val region = settingsRepository.getRegion()
             val baseUrl = getBaseUrl()
 
             coroutineScope {
@@ -59,14 +56,12 @@ class ApiService @Inject constructor(
                     client.get("$baseUrl/track/playback") {
                         parameter("id", trackId)
                         parameter("quality", quality)
-                        parameter("country", region)
                     }.body<PlaybackResponseDto>()
                 }
 
                 val metadata = async {
                     client.get("$baseUrl/track/metadata") {
                         parameter("id", trackId)
-                        parameter("country", region)
                     }.body<Map<String, String>>()
                 }
 
