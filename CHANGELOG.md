@@ -1,34 +1,42 @@
 ### Changelog
 
-#### Version 1.4
-**Release Date:** March 31, 2025
+#### Version 1.5
+**Release Date:** April 5, 2025
 
 ---
-- **Service Reliability Improvements:**
-  - Added automatic handling of Cloudflare daily limits
-  - App will now clearly inform you when service limits are reached
-  - Search automatically becomes available again after limits reset
-  - Your app remembers limit status even if you close and reopen it
+- **Backend Optimization:**
+  - Significant backend refactoring for improved performance
+  - Dropped support for older app versions - clean install recommended
+  - Enhanced server communication efficiency
 
-- **Visual Improvements:**
-  - Tooltips now match the app's color theme for better visibility
-
-- **Bug Fixes:**
-  - Fixed search history duplicating entries when selecting the same item multiple times
-  - Improved deletion behavior to remove only the specific history item rather than all matching items
+- **New Features:**
+  - Added support for downloading cover art and lyrics as separate files
+  - More flexible file management for media assets
 
 > [!IMPORTANT]
-> Server URL Configuration Required
->
-> Every build of Echoir requires a server URL. To obtain the server URL:
-> - Join our Telegram group: [Echoir Support](https://t.me/ThisPandaCanTalk)
-> - Follow group instructions to get the server configuration
-
-> [!NOTE]
-> Backend Server Update
->
-> We've switched to Cloudflare for API services, which has daily usage limits that reset at 00:00 UTC.
-> If you see a message about service limits being reached, normal functionality will automatically resume after midnight UTC.
+> **Understanding the Region Filter**
+> 
+> The Region Filter is a SEARCH FILTER, NOT a country selection:
+> - Purpose: Filter search results by track availability in specific music markets
+> - **Only affects search results**
+> - Helps discover tracks available in different regions
+> - Some tracks are only available in certain markets
+> - Default is Brazil (BR)
 
 > [!WARNING]
-> The app will not function without a valid server URL
+> **Potential Download Limitations**
+> 
+> If you experience issues downloading songs:
+> - Some countries may have restricted access to certain music services
+> - Examples: Russia currently has limited access to some music platforms
+> - **Potential Solution:** Use a VPN to bypass regional restrictions
+
+> [!IMPORTANT]
+> Server URL is still required for app functionality
+> 
+> To obtain server configuration:
+> - Join our Telegram group: [Echoir Support](https://t.me/ThisPandaCanTalk)
+> - Follow group instructions to get the server setup
+
+> [!NOTE]
+> Continued development aims to provide the best possible music discovery and download experience.
