@@ -216,7 +216,12 @@ class DownloadRepositoryImpl @Inject constructor(
                     // Save cover art if enabled
                     if (saveCoverArt && download.cover != null) {
                         try {
-                            val coverImageData = metadataManager.downloadCoverArt(download.cover)
+                            val coverImageData = metadataManager.downloadCoverArt(
+                                download.cover.replace(
+                                    "80x80",
+                                    "1280x1280"
+                                )
+                            )
                             if (coverImageData != null) {
                                 val coverFile =
                                     targetDir.createFile("image/jpeg", "$finalFileName.jpg")
