@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.domain.model.Download
@@ -78,14 +79,11 @@ class HomeViewModel @Inject constructor(
             val path = download.filePath
             val fileDeleted = if (path.startsWith("content://")) {
                 val uri = path.toUri()
-                context.contentResolver.delete(uri, null, null) > 0
+                val documentFile = DocumentFile.fromSingleUri(context, uri)
+                documentFile?.exists() == true && documentFile.delete()
             } else {
                 val file = File(path)
-                if (file.exists()) {
-                    file.delete()
-                } else {
-                    false
-                }
+                file.exists() && file.delete()
             }
 
             if (fileDeleted) {
