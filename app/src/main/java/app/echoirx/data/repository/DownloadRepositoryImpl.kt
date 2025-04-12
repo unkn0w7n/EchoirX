@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.Collections
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -93,8 +94,9 @@ class DownloadRepositoryImpl @Inject constructor(
             updateDownloadStatus(downloadId, DownloadStatus.DOWNLOADING)
 
             // Get cache file path for final processing
+            val uniqueUUID = UUID.randomUUID().toString()
             val extension = if (playbackInfo.codec == "flac") "flac" else "m4a"
-            val cacheFile = File(context.cacheDir, "${trackId}_cache.$extension")
+            val cacheFile = File(context.cacheDir, "${trackId}_cache_$uniqueUUID.$extension")
 
             // Handle single vs multiple parts
             if (playbackInfo.urls.size == 1) {
