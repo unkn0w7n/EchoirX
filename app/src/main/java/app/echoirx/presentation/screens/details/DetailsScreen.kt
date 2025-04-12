@@ -195,7 +195,7 @@ fun DetailsScreen(
                                 leadingContent = {
                                     Text(
                                         text = String.format(
-                                            java.util.Locale(Locale.current.language),
+                                            java.util.Locale.forLanguageTag(Locale.current.language),
                                             "%02d",
                                             state.tracks.indexOfFirst { it.id == track.id } + 1
                                         ),
