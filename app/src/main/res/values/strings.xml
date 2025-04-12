@@ -64,6 +64,7 @@
     <string name="cd_stop_preview">Stop preview</string>
     <string name="cd_retry">Retry</string>
     <string name="cd_delete_search">Delete search</string>
+    <string name="cd_clear">Clear</string>
 
     <!-- Labels -->
     <string name="label_explicit">Explicit</string>

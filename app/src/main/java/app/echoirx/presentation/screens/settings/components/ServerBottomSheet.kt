@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.CloudQueue
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -131,6 +133,20 @@ fun ServerBottomSheet(
                             text = stringResource(R.string.msg_spaces_will_be_removed),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                },
+                trailingIcon = {
+                    if (serverUrl.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                serverUrl = ""
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Clear,
+                                contentDescription = stringResource(R.string.cd_clear)
+                            )
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
