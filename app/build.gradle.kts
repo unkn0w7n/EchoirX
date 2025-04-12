@@ -24,12 +24,12 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "app.echoirx"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.echoirx"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = (100000000 + Instant.now().toEpochMilli() / 1000).toInt()
         versionName = "1.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
