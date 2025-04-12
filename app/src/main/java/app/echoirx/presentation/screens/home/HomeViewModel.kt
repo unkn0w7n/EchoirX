@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadRequest
+import app.echoirx.domain.model.DownloadStatus
 import app.echoirx.domain.model.QualityConfig
 import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.DownloadRepository
@@ -75,16 +76,29 @@ class HomeViewModel @Inject constructor(
 
         return try {
             val path = download.filePath
-            if (path.startsWith("content://")) {
+            val fileDeleted = if (path.startsWith("content://")) {
                 val uri = path.toUri()
-                context.contentResolver.delete(uri, null, null)
+                context.contentResolver.delete(uri, null, null) > 0
             } else {
                 val file = File(path)
                 if (file.exists()) {
                     file.delete()
+                } else {
+                    false
                 }
             }
-            true
+
+            if (fileDeleted) {
+                viewModelScope.launch {
+                    downloadRepository.updateDownloadStatus(
+                        download.downloadId,
+                        DownloadStatus.DELETED
+                    )
+                    downloadRepository.updateDownloadFilePath(download.downloadId, "")
+                }
+            }
+
+            fileDeleted
         } catch (_: Exception) {
             false
         }

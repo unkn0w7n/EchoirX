@@ -77,6 +77,7 @@ fun DownloadBottomSheet(
 
     val isCompleted = download.status == DownloadStatus.COMPLETED && fileExists
     val isFailed = download.status == DownloadStatus.FAILED
+    val isDeleted = download.status == DownloadStatus.DELETED
     val shouldShowFileOptions = isCompleted && fileExists
 
     ModalBottomSheet(
@@ -129,14 +130,16 @@ fun DownloadBottomSheet(
                             )
                         }
 
-                        var statusText = when (download.status) {
-                            DownloadStatus.COMPLETED -> stringResource(R.string.label_completed)
-                            DownloadStatus.FAILED -> stringResource(R.string.label_failed)
-                            else -> download.status.name
-                        }
+                        val statusText = when (download.status) {
+                            DownloadStatus.COMPLETED -> if (fileExists) {
+                                stringResource(R.string.label_completed)
+                            } else {
+                                stringResource(R.string.label_file_missing)
+                            }
 
-                        if (download.status == DownloadStatus.COMPLETED && !fileExists) {
-                            statusText = stringResource(R.string.label_file_missing)
+                            DownloadStatus.FAILED -> stringResource(R.string.label_failed)
+                            DownloadStatus.DELETED -> stringResource(R.string.label_deleted)
+                            else -> download.status.name
                         }
 
                         Text(
@@ -147,6 +150,7 @@ fun DownloadBottomSheet(
                                     MaterialTheme.colorScheme.primary
 
                                 download.status == DownloadStatus.FAILED ||
+                                        download.status == DownloadStatus.DELETED ||
                                         (download.status == DownloadStatus.COMPLETED && !fileExists) ->
                                     MaterialTheme.colorScheme.error
 
@@ -197,7 +201,7 @@ fun DownloadBottomSheet(
                         )
                     }
 
-                    if (isFailed) {
+                    if (isFailed || isDeleted) {
                         add(
                             ChipAction(
                                 label = stringResource(R.string.action_retry_download),

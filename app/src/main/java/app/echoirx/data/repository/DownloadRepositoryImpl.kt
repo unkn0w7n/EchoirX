@@ -415,7 +415,8 @@ class DownloadRepositoryImpl @Inject constructor(
         downloadDao.getDownloadsByStatus(
             listOf(
                 DownloadStatus.COMPLETED,
-                DownloadStatus.FAILED
+                DownloadStatus.FAILED,
+                DownloadStatus.DELETED
             )
         )
 }
