@@ -174,10 +174,7 @@ class DownloadRepositoryImpl @Inject constructor(
                     if (saveLyrics) {
                         try {
                             val lyricsFilePath = "${targetDir.absolutePath}/${finalFileName}.lrc"
-                            if (metadataManager.extractAndSaveLyrics(metadata, lyricsFilePath)) {
-                                // Also scan the lyrics file
-                                scanMedia(lyricsFilePath, "text/plain")
-                            }
+                            metadataManager.extractAndSaveLyrics(metadata, lyricsFilePath)
                         } catch (e: Exception) {
                             Log.e(TAG, "Failed to save lyrics as file", e)
                             // Continue with the download even if saving lyrics fails
@@ -250,7 +247,10 @@ class DownloadRepositoryImpl @Inject constructor(
                             val lyrics = metadataManager.extractLyrics(metadata)
                             if (lyrics != null) {
                                 val lyricsFile =
-                                    targetDir.createFile("text/plain", "$finalFileName.lrc")
+                                    targetDir.createFile(
+                                        "application/octet-stream",
+                                        "$finalFileName.lrc"
+                                    )
                                 lyricsFile?.let {
                                     context.contentResolver.openOutputStream(it.uri)
                                         ?.use { output ->
@@ -365,16 +365,15 @@ class DownloadRepositoryImpl @Inject constructor(
             MediaScannerConnection.scanFile(
                 context,
                 arrayOf(path),
-                arrayOf(mimeType),
-                { scannedPath, uri ->
-                    if (uri != null) {
-                        Log.i(TAG, "Media scan completed for: $scannedPath")
-                        Log.i(TAG, "Scanned URI: $uri")
-                    } else {
-                        Log.e(TAG, "Media scan failed for: $scannedPath")
-                    }
+                arrayOf(mimeType)
+            ) { scannedPath, uri ->
+                if (uri != null) {
+                    Log.i(TAG, "Media scan completed for: $scannedPath")
+                    Log.i(TAG, "Scanned URI: $uri")
+                } else {
+                    Log.e(TAG, "Media scan failed for: $scannedPath")
                 }
-            )
+            }
         }
     }
 
