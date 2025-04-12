@@ -79,12 +79,16 @@ class DownloadRepositoryImpl @Inject constructor(
         downloadId: String,
         trackId: Long,
         quality: String,
+        modes: List<String>?,
         onProgress: suspend (Int) -> Unit
     ): Result<String> = withContext(Dispatchers.IO) {
         runCatching {
-            Log.d(TAG, "Starting download for track: $trackId with quality: $quality")
+            Log.d(
+                TAG,
+                "Starting download for track: $trackId with quality: $quality and modes: $modes"
+            )
 
-            val (playbackInfo, metadata) = getDownloadInfo(trackId, quality)
+            val (playbackInfo, metadata) = getDownloadInfo(trackId, quality, modes)
 
             updateDownloadStatus(downloadId, DownloadStatus.DOWNLOADING)
 
@@ -374,9 +378,10 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override suspend fun getDownloadInfo(
         trackId: Long,
-        quality: String
+        quality: String,
+        modes: List<String>?
     ): Pair<PlaybackResponse, Map<String, String>> =
-        apiService.getDownloadInfo(trackId, quality)
+        apiService.getDownloadInfo(trackId, quality, modes)
             .let { (playbackDto, metadata) ->
                 playbackDto.toDomain() to metadata
             }

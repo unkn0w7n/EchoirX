@@ -10,12 +10,14 @@ interface DownloadRepository {
         downloadId: String,
         trackId: Long,
         quality: String,
+        modes: List<String>? = null,
         onProgress: suspend (Int) -> Unit
     ): Result<String>
 
     suspend fun getDownloadInfo(
         trackId: Long,
-        quality: String
+        quality: String,
+        modes: List<String>?
     ): Pair<PlaybackResponse, Map<String, String>>
 
     suspend fun saveDownload(download: Download)

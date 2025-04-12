@@ -70,24 +70,29 @@ class DownloadWorker @AssistedInject constructor(
 
         return try {
             val download = downloadRepository.getDownloadById(downloadId)
+            // Get modes from the SearchResult
+            val modes = download?.searchResult?.modes
+
             val result = downloadRepository.processDownload(
                 downloadId = downloadId,
                 trackId = trackId,
-                quality = quality
-            ) { progress ->
-                setProgress(workDataOf(KEY_PROGRESS to progress))
-                downloadRepository.updateDownloadProgress(downloadId, progress)
+                quality = quality,
+                modes = modes,
+                onProgress = { progress ->
+                    setProgress(workDataOf(KEY_PROGRESS to progress))
+                    downloadRepository.updateDownloadProgress(downloadId, progress)
 
-                // Update notification with current progress
-                download?.let {
-                    notificationManager.updateDownloadProgress(
-                        downloadId = downloadId,
-                        title = it.searchResult.title,
-                        progress = progress,
-                        indeterminate = false
-                    )
+                    // Update notification with current progress
+                    download?.let {
+                        notificationManager.updateDownloadProgress(
+                            downloadId = downloadId,
+                            title = it.searchResult.title,
+                            progress = progress,
+                            indeterminate = false
+                        )
+                    }
                 }
-            }
+            )
 
             if (result.isSuccess) {
                 download?.let {

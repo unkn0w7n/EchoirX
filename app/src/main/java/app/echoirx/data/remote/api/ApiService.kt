@@ -46,16 +46,26 @@ class ApiService @Inject constructor(
 
     suspend fun getDownloadInfo(
         trackId: Long,
-        quality: String
+        quality: String,
+        modes: List<String>?
     ): Pair<PlaybackResponseDto, Map<String, String>> =
         withContext(Dispatchers.IO) {
             val baseUrl = getBaseUrl()
+
+            val mode = when {
+                modes?.contains("DOLBY_ATMOS") == true -> "DOLBY_ATMOS"
+                modes?.contains("STEREO") == true -> "STEREO"
+                else -> null
+            }
 
             coroutineScope {
                 val playback = async {
                     client.get("$baseUrl/track/playback") {
                         parameter("id", trackId)
                         parameter("quality", quality)
+                        if (mode != null) {
+                            parameter("mode", mode)
+                        }
                     }.body<PlaybackResponseDto>()
                 }
 
