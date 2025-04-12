@@ -36,7 +36,8 @@ class DownloadWorker @AssistedInject constructor(
         val downloadId =
             inputData.getString(KEY_DOWNLOAD_ID) ?: return createDefaultForegroundInfo()
         val download = downloadRepository.getDownloadById(downloadId)
-        val title = download?.title ?: applicationContext.getString(R.string.label_unknown)
+        val title =
+            download?.searchResult?.title ?: applicationContext.getString(R.string.label_unknown)
         val isMerging = download?.status == DownloadStatus.MERGING
         val progress = download?.progress ?: 0
 
@@ -81,7 +82,7 @@ class DownloadWorker @AssistedInject constructor(
                 download?.let {
                     notificationManager.updateDownloadProgress(
                         downloadId = downloadId,
-                        title = it.title,
+                        title = it.searchResult.title,
                         progress = progress,
                         indeterminate = false
                     )
@@ -92,7 +93,7 @@ class DownloadWorker @AssistedInject constructor(
                 download?.let {
                     notificationManager.showCompletionNotification(
                         downloadId = downloadId,
-                        title = it.title
+                        title = it.searchResult.title
                     )
                 }
                 Result.success()
@@ -100,7 +101,7 @@ class DownloadWorker @AssistedInject constructor(
                 download?.let {
                     notificationManager.showErrorNotification(
                         downloadId = downloadId,
-                        title = it.title
+                        title = it.searchResult.title
                     )
                 } ?: notificationManager.showErrorNotification(
                     downloadId = downloadId,
@@ -115,7 +116,7 @@ class DownloadWorker @AssistedInject constructor(
             download?.let {
                 notificationManager.showErrorNotification(
                     downloadId = downloadId,
-                    title = it.title
+                    title = it.searchResult.title
                 )
             } ?: notificationManager.showErrorNotification(
                 downloadId = downloadId,

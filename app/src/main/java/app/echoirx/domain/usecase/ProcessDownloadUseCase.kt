@@ -24,13 +24,8 @@ class ProcessDownloadUseCase @Inject constructor(
 
     private suspend fun processTrackDownload(request: DownloadRequest.Track) {
         val download = Download(
-            trackId = request.track.id,
-            title = request.track.title,
-            artist = request.track.artists.joinToString(", "),
-            cover = request.track.cover,
-            quality = request.config.quality,
-            duration = request.track.duration,
-            explicit = request.track.explicit
+            searchResult = request.track,
+            quality = request.config.quality
         )
 
         downloadRepository.saveDownload(download)
@@ -41,13 +36,8 @@ class ProcessDownloadUseCase @Inject constructor(
     private suspend fun processAlbumDownload(request: DownloadRequest.Album) {
         request.tracks.forEach { track ->
             val download = Download(
-                trackId = track.id,
-                title = track.title,
-                artist = track.artists.joinToString(", "),
-                cover = track.cover,
+                searchResult = track,
                 quality = request.config.quality,
-                duration = track.duration,
-                explicit = track.explicit,
                 albumId = request.album.id,
                 albumTitle = request.album.title,
                 albumDirectory = request.downloadContext.directory

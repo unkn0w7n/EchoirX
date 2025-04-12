@@ -11,7 +11,6 @@ import app.echoirx.domain.model.Download
 import app.echoirx.domain.model.DownloadRequest
 import app.echoirx.domain.model.DownloadStatus
 import app.echoirx.domain.model.QualityConfig
-import app.echoirx.domain.model.SearchResult
 import app.echoirx.domain.repository.DownloadRepository
 import app.echoirx.domain.usecase.GetDownloadsUseCase
 import app.echoirx.domain.usecase.ProcessDownloadUseCase
@@ -119,16 +118,7 @@ class HomeViewModel @Inject constructor(
 
                 processDownloadUseCase(
                     DownloadRequest.Track(
-                        track = SearchResult(
-                            id = download.trackId,
-                            title = download.title,
-                            duration = download.duration,
-                            explicit = download.explicit,
-                            cover = download.cover,
-                            artists = listOf(download.artist),
-                            modes = null,
-                            formats = null
-                        ),
+                        track = download.searchResult,
                         config = qualityConfig
                     )
                 )

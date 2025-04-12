@@ -8,19 +8,13 @@ import java.util.UUID
 data class Download(
     @PrimaryKey
     val downloadId: String = UUID.randomUUID().toString(),
-    val trackId: Long,
-    val title: String,
-    val artist: String,
-    val cover: String?,
+    val searchResult: SearchResult,
     val quality: String,
-    val duration: String,
-    val explicit: Boolean,
     val progress: Int = 0,
     val status: DownloadStatus = DownloadStatus.QUEUED,
     val filePath: String? = null,
     val timestamp: Long = System.currentTimeMillis(),
-    val format: String? = null,
+    val albumDirectory: String? = null,
     val albumId: Long? = null,
-    val albumTitle: String? = null,
-    val albumDirectory: String? = null
+    val albumTitle: String? = null
 )

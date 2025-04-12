@@ -58,7 +58,7 @@ fun DownloadItem(
         },
         headlineContent = {
             Text(
-                text = download.title,
+                text = download.searchResult.title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth()
@@ -66,7 +66,7 @@ fun DownloadItem(
         },
         supportingContent = {
             Text(
-                text = download.artist,
+                text = download.searchResult.artists.joinToString(", "),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth()
@@ -75,7 +75,7 @@ fun DownloadItem(
         leadingContent = {
             Box {
                 TrackCover(
-                    url = download.cover,
+                    url = download.searchResult.cover,
                     size = 56.dp
                 )
 
@@ -165,10 +165,10 @@ fun DownloadItem(
                     }
                 }
                 Text(
-                    text = download.duration,
+                    text = download.searchResult.duration,
                     style = MaterialTheme.typography.bodySmall
                 )
-                if (download.explicit) {
+                if (download.searchResult.explicit) {
                     Icon(
                         painter = painterResource(R.drawable.ic_explicit),
                         contentDescription = stringResource(R.string.cd_explicit_content),

@@ -144,11 +144,11 @@ class DownloadRepositoryImpl @Inject constructor(
                     val saveLyrics = settingsRepository.getSaveLyrics()
 
                     // Save cover art if enabled
-                    if (saveCoverArt && download.cover != null) {
+                    if (saveCoverArt && download.searchResult.cover != null) {
                         try {
                             val coverFilePath = "${targetDir.absolutePath}/${finalFileName}.jpg"
                             if (metadataManager.extractAndSaveCoverArt(
-                                    download.cover.replace(
+                                    download.searchResult.cover.replace(
                                         "80x80",
                                         "1280x1280"
                                     ),
@@ -214,10 +214,10 @@ class DownloadRepositoryImpl @Inject constructor(
                     val saveLyrics = settingsRepository.getSaveLyrics()
 
                     // Save cover art if enabled
-                    if (saveCoverArt && download.cover != null) {
+                    if (saveCoverArt && download.searchResult.cover != null) {
                         try {
                             val coverImageData = metadataManager.downloadCoverArt(
-                                download.cover.replace(
+                                download.searchResult.cover.replace(
                                     "80x80",
                                     "1280x1280"
                                 )
@@ -337,7 +337,10 @@ class DownloadRepositoryImpl @Inject constructor(
 
     private suspend fun generateFileName(download: Download): String {
         val format = settingsRepository.getFileNamingFormat()
-        val fileName = format.format(download.artist, download.title)
+        val fileName = format.format(
+            download.searchResult.artists.joinToString(", "),
+            download.searchResult.title
+        )
         return sanitizeFileName(fileName)
     }
 
