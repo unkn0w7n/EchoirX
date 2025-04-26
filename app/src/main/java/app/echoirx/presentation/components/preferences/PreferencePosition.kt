@@ -5,6 +5,4 @@ enum class PreferencePosition {
     Top,
     Middle,
     Bottom,
-    TopWithGap,
-    BottomWithGap
 }

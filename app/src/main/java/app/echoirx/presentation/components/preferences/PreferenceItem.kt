@@ -33,15 +33,15 @@ fun PreferenceItem(
     trailingContent: @Composable (() -> Unit)? = null
 ) {
     val shape = when (position) {
-        PreferencePosition.Single -> RoundedCornerShape(12.dp)
-        PreferencePosition.Top, PreferencePosition.TopWithGap -> RoundedCornerShape(
-            topStart = 12.dp, topEnd = 12.dp,
+        PreferencePosition.Single -> MaterialTheme.shapes.large
+        PreferencePosition.Top -> RoundedCornerShape(
+            topStart = 18.dp, topEnd = 18.dp,
             bottomStart = 4.dp, bottomEnd = 4.dp
         )
 
-        PreferencePosition.Bottom, PreferencePosition.BottomWithGap -> RoundedCornerShape(
+        PreferencePosition.Bottom -> RoundedCornerShape(
             topStart = 4.dp, topEnd = 4.dp,
-            bottomStart = 12.dp, bottomEnd = 12.dp
+            bottomStart = 18.dp, bottomEnd = 18.dp
         )
 
         PreferencePosition.Middle -> RoundedCornerShape(4.dp)
@@ -50,7 +50,7 @@ fun PreferenceItem(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp)
+            .padding(vertical = 1.dp)
             .clip(shape)
             .then(
                 if (onClick != null) {
@@ -60,7 +60,7 @@ fun PreferenceItem(
                 }
             ),
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         ),
         headlineContent = {
             Text(
