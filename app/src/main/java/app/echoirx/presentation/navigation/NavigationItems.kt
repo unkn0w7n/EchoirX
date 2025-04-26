@@ -6,8 +6,8 @@ import app.echoirx.R
 
 data class NavigationItem(
     val route: String,
-    @DrawableRes val icon: Int,
-    @StringRes val label: Int
+    @param:DrawableRes val icon: Int,
+    @param:StringRes val label: Int
 )
 
 val navigationItems = listOf(

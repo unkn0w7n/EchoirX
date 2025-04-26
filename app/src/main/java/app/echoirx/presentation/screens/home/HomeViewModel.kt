@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
     private val getDownloadsUseCase: GetDownloadsUseCase,
     private val downloadRepository: DownloadRepository,
     private val processDownloadUseCase: ProcessDownloadUseCase,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()

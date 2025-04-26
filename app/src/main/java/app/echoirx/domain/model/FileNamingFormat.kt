@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import app.echoirx.R
 
 enum class FileNamingFormat(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val previewText: String,
     val format: (String, String) -> String
 ) {

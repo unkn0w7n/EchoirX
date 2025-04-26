@@ -4,10 +4,10 @@ import androidx.annotation.StringRes
 import app.echoirx.R
 
 sealed class QualityConfig(
-    @StringRes val label: Int,
-    @StringRes val shortLabel: Int = label,
+    @param:StringRes val label: Int,
+    @param:StringRes val shortLabel: Int = label,
     val quality: String,
-    @StringRes val summary: Int
+    @param:StringRes val summary: Int
 ) {
     data object HiRes : QualityConfig(
         label = R.string.quality_label_hires,

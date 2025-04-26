@@ -33,7 +33,7 @@ class SearchViewModel @Inject constructor(
     private val processDownloadUseCase: ProcessDownloadUseCase,
     private val settingsUseCase: SettingsUseCase,
     private val audioPreviewPlayer: AudioPreviewPlayer,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state.asStateFlow()

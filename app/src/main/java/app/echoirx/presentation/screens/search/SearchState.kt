@@ -20,7 +20,7 @@ data class SearchState(
 )
 
 enum class SearchType(
-    @StringRes val title: Int
+    @param:StringRes val title: Int
 ) {
     TRACKS(R.string.label_tracks),
     ALBUMS(R.string.label_albums)
@@ -32,7 +32,7 @@ data class SearchFilter(
 )
 
 enum class SearchContentFilter(
-    @StringRes val label: Int,
+    @param:StringRes val label: Int,
     val explicit: Boolean
 ) {
     CLEAN(R.string.label_clean, false),
@@ -40,7 +40,7 @@ enum class SearchContentFilter(
 }
 
 enum class SearchQuality(
-    @StringRes val label: Int,
+    @param:StringRes val label: Int,
     val format: String
 ) {
     HIRES(R.string.quality_label_hires, "HIRES_LOSSLESS"),

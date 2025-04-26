@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DownloadNotificationManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     companion object {
         const val CHANNEL_ID = "download_channel"

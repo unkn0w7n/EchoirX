@@ -23,7 +23,7 @@ class SettingsViewModel @Inject constructor(
     private val workManager: WorkManager,
     private val downloadDao: DownloadDao,
     private val searchHistoryRepository: SearchHistoryRepository,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state: StateFlow<SettingsState> = _state.asStateFlow()

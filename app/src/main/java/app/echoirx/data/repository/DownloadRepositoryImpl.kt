@@ -37,7 +37,7 @@ class DownloadRepositoryImpl @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val ffmpegProcessor: FFmpegProcessor,
     private val metadataManager: MetadataManager,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : DownloadRepository {
 
     companion object {

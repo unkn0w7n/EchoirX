@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PermissionsManager @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     val requiredPermissions = when {
         // Android 11+ (API 30+)
