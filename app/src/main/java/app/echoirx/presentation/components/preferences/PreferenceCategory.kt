@@ -16,7 +16,7 @@ fun PreferenceCategory(
     color: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     Text(
-        text = title.uppercase(Locale.getDefault()),
+        text = title,
         style = MaterialTheme.typography.labelMedium,
         color = color,
         modifier = modifier.padding(
